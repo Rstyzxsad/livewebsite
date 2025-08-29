@@ -61,8 +61,9 @@
   }
 
   /* Modal / Lightbox */
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; }
-  .modal img { max-width:90%; max-height:80%; border-radius:10px; }
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:10px; }
+  .modal img { max-width:90%; max-height:70%; border-radius:10px; margin-bottom:10px; }
+  .modal-desc { color:#fff; font-size:1rem; margin-top:5px; }
   .modal-close { position:absolute; top:20px; right:20px; font-size:2rem; color:#fff; cursor:pointer; }
 
   /* Donasi Link */
@@ -92,7 +93,7 @@
   .panel {
     position: fixed;
     top:0;
-    left:-100%; /* pastikan panel sepenuhnya tersembunyi */
+    left:-100%;
     width:80%; 
     max-width:260px; 
     height:100%;
@@ -152,11 +153,11 @@
 <div class="gallery-section">
   <div class="gallery-title">What Happened Lately?</div>
   <div class="gallery-container">
-    <div class="gallery-item"><img src="img1.jpeg" alt=""></div>
-    <div class="gallery-item"><img src="img2.jpeg" alt=""></div>
-    <div class="gallery-item"><img src="img3.jpeg" alt=""></div>
-    <div class="gallery-item"><img src="img4.jpeg" alt=""></div>
-    <div class="gallery-item"><img src="img5.jpeg" alt=""></div>
+    <div class="gallery-item" data-desc="Foto 1 - Deskripsi singkat"><img src="img1.jpeg" alt=""></div>
+    <div class="gallery-item" data-desc="Foto 2 - Deskripsi singkat"><img src="img2.jpeg" alt=""></div>
+    <div class="gallery-item" data-desc="Foto 3 - Deskripsi singkat"><img src="img3.jpeg" alt=""></div>
+    <div class="gallery-item" data-desc="Foto 4 - Deskripsi singkat"><img src="img4.jpeg" alt=""></div>
+    <div class="gallery-item" data-desc="Foto 5 - Deskripsi singkat"><img src="img5.jpeg" alt=""></div>
   </div>
 </div>
 
@@ -183,10 +184,11 @@
 <div class="modal" id="modal">
   <span class="modal-close" id="modalClose">✖</span>
   <img id="modalImg" src="" alt="">
+  <div class="modal-desc" id="modalDesc"></div>
 </div>
 
 <!-- Audio -->
-<audio id="audioPlayer" src="song.mp3" autoplay loop></audio>
+<audio id="audioPlayer" src="song.mp3" autoplay loop controls></audio>
 
 <!-- Running text -->
 <div class="running-text-container">
@@ -225,44 +227,6 @@
   // Modal Lightbox
   const modal = document.getElementById('modal');
   const modalImg = document.getElementById('modalImg');
+  const modalDesc = document.getElementById('modalDesc');
   const modalClose = document.getElementById('modalClose');
-  document.querySelectorAll('.gallery-item img').forEach(img=>{
-    img.addEventListener('click', ()=>{
-      modal.style.display='flex';
-      modalImg.src = img.src;
-    });
-  });
-  modalClose.addEventListener('click', ()=>{ modal.style.display='none'; });
-  modal.addEventListener('click', (e)=>{
-    if(e.target===modal) modal.style.display='none';
-  });
-
-  // Running text one by one
-  const texts = [
-    "🔥 Welcome to my site 🔥",
-    "🙌 Support my channel 🙌",
-    "🎶 Enjoy the music 🎶",
-    "💡 Add your text here 💡"
-  ];
-  const runningTextEl = document.getElementById('runningText');
-  let index = 0;
-  function showNextText() {
-    runningTextEl.textContent = texts[index];
-    runningTextEl.style.transition = 'none';
-    runningTextEl.style.opacity=0;
-    runningTextEl.style.transform='translateX(100%)';
-    void runningTextEl.offsetWidth;
-    runningTextEl.style.transition='transform 5s linear, opacity 0.5s';
-    runningTextEl.style.opacity=1;
-    runningTextEl.style.transform='translateX(0)';
-    setTimeout(()=>{
-      runningTextEl.style.opacity=0;
-      runningTextEl.style.transform='translateX(-100%)';
-    },4500);
-    index = (index+1)%texts.length;
-    setTimeout(showNextText,5000);
-  }
-  showNextText();
-</script>
-</body>
-</html>
+ 
