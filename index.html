@@ -36,6 +36,8 @@
     gap:6px;
     overflow-x:auto;
     padding:5px 0;
+    z-index:20;
+    position:relative;
   }
   .gallery-container::-webkit-scrollbar {display:none;}
   .gallery-item {
@@ -46,6 +48,8 @@
     height:50px;
     cursor:pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    z-index:20;
+    position:relative;
   }
   .gallery-item img {
     width:100%;
@@ -67,7 +71,7 @@
   .modal-close { position:absolute; top:20px; right:20px; font-size:2rem; color:#fff; cursor:pointer; }
 
   /* Donasi Link */
-  .donasi { text-align:center; margin-top:10px; }
+  .donasi { text-align:center; margin-top:10px; z-index:20; position:relative; }
   .donasi a { color:#e74c3c; text-decoration:none; font-size:1rem; }
   .donasi a:hover { color:#f39c12; }
 
@@ -108,7 +112,7 @@
   .overlay {
     position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.4);
-    z-index:45; display:none;
+    z-index:49; display:none;
   }
   .overlay.show{display:block;}
   .close-btn {
@@ -188,7 +192,7 @@
 </div>
 
 <!-- Audio -->
-<audio id="audioPlayer" src="song.mp3" autoplay loop controls></audio>
+<audio id="audioPlayer" src="song.mp3" loop></audio>
 
 <!-- Running text -->
 <div class="running-text-container">
@@ -196,7 +200,6 @@
 </div>
 
 <script>
-  // Panel Artikel
   const menuBtn = document.getElementById('menuBtn');
   const panel = document.getElementById('panel');
   const overlay = document.getElementById('overlay');
@@ -204,6 +207,7 @@
   const menuHint = document.getElementById('menuHint');
   let hintClicked=false;
 
+  // Panel Artikel
   menuBtn.addEventListener('click', ()=>{
     panel.classList.add('open');
     overlay.classList.add('show');
@@ -229,4 +233,45 @@
   const modalImg = document.getElementById('modalImg');
   const modalDesc = document.getElementById('modalDesc');
   const modalClose = document.getElementById('modalClose');
- 
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  galleryItems.forEach(item=>{
+    item.addEventListener('click', ()=>{
+      modal.style.display='flex';
+      modalImg.src = item.querySelector('img').src;
+      modalDesc.textContent = item.dataset.desc;
+    });
+  });
+  modalClose.addEventListener('click', ()=>{ modal.style.display='none'; });
+
+  // Audio autoplay + set volume 25%
+  const audio = document.getElementById('audioPlayer');
+  audio.volume = 0.25;
+  audio.play().catch(()=>{ console.log('autoplay blocked'); });
+
+  // Running text sequential
+  const runningTextArr = [
+    "🔥 Welcome to my website 🔥",
+    "🙌 Support my channel 🙌",
+    "🎶 Enjoy the music 🎶",
+    "💡 Tambah teks sesuka hati 💡"
+  ];
+  const runningTextDiv = document.getElementById('runningText');
+  let rtIndex = 0;
+  function showRunningText(){
+    if(rtIndex >= runningTextArr.length) return;
+    runningTextDiv.textContent = runningTextArr[rtIndex];
+    runningTextDiv.style.opacity = 1;
+    setTimeout(()=>{
+      runningTextDiv.style.transition='opacity 1s';
+      runningTextDiv.style.opacity=0;
+      setTimeout(()=>{
+        runningTextDiv.style.transition='none';
+        rtIndex++;
+        showRunningText();
+      },1000);
+    },3000);
+  }
+  showRunningText();
+</script>
+</body>
+</html>
