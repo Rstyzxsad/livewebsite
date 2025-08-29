@@ -18,15 +18,18 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: -1;
-      overflow: hidden;
     }
 
     .slideshow img {
       position: absolute;
       width: 100%; height: 100%;
       object-fit: cover;
-      opacity: 0.15;
-      animation: fade 25s infinite;
+      user-drag: none;
+      user-select: none;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      opacity: 0;
+      animation: slidefade 25s infinite;
     }
 
     .slideshow img:nth-child(1) { animation-delay: 0s; }
@@ -35,12 +38,12 @@
     .slideshow img:nth-child(4) { animation-delay: 15s; }
     .slideshow img:nth-child(5) { animation-delay: 20s; }
 
-    @keyframes fade {
-      0% { opacity: 0.15; }
-      20% { opacity: 0.15; }
-      25% { opacity: 0; }
-      95% { opacity: 0; }
-      100% { opacity: 0.15; }
+    @keyframes slidefade {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      20% { opacity: 1; }
+      30% { opacity: 0; }
+      100% { opacity: 0; }
     }
 
     .center {
@@ -50,17 +53,8 @@
       text-align: center;
     }
 
-    .center h1 {
-      font-size: 3rem;
-    }
-
-    .center a {
-      display: block;
-      margin-top: 10px;
-      color: #0af;
-      text-decoration: none;
-      font-size: 1.2rem;
-    }
+    .center h1 { font-size: 3rem; }
+    .center a { display: block; margin-top: 10px; color: #0af; text-decoration: none; font-size: 1.2rem; }
 
     .marquee-container {
       position: fixed;
@@ -78,20 +72,14 @@
       animation: marquee 15s linear infinite;
     }
 
-    .marquee span {
-      margin-right: 50px;
-      display: inline-block;
-    }
+    .marquee span { margin-right: 50px; display: inline-block; }
 
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
     .now-playing {
       position: fixed;
       bottom: 10px;
-      right: 10px; /* dipindahkan ke kanan */
+      right: 10px;
       color: #aaa;
       font-size: 1rem;
       z-index: 20;
@@ -99,91 +87,25 @@
       align-items: center;
     }
 
-    .visualizer {
-      display: flex;
-      margin-right: 8px;
-    }
-
-    .bar {
-      width: 4px;
-      height: 10px;
-      background: #aaa;
-      margin: 0 1px;
-      animation: bounce 2s infinite ease-in-out;
-    }
-
+    .visualizer { display: flex; margin-right: 8px; }
+    .bar { width: 4px; height: 10px; background: #aaa; margin: 0 1px; animation: bounce 2s infinite ease-in-out; }
     .bar:nth-child(2) { animation-delay: 0.4s; }
     .bar:nth-child(3) { animation-delay: 0.8s; }
     .bar:nth-child(4) { animation-delay: 1.2s; }
 
-    @keyframes bounce {
-      0%, 100% { height: 5px; }
-      50% { height: 20px; }
-    }
+    @keyframes bounce { 0%, 100% { height: 5px; } 50% { height: 20px; } }
 
-    .menu-btn {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      font-size: 2rem;
-      color: white;
-      background: none;
-      border: none;
-      cursor: pointer;
-      z-index: 50;
-    }
-
-    .menu-hint {
-      position: fixed;
-      top: 50px;
-      left: 10px;
-      background: rgba(0,0,0,0.6);
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: #fff;
-      animation: blink 1.5s infinite;
-      z-index: 45;
-      max-width: 180px;
-    }
-
+    .menu-btn { position: fixed; top: 10px; left: 10px; font-size: 2rem; color: white; background: none; border: none; cursor: pointer; z-index: 50; }
+    .menu-hint { position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; color: #fff; animation: blink 1.5s infinite; z-index: 45; max-width: 180px; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    .panel {
-      position: fixed;
-      top: 0;
-      left: -300px;
-      width: 300px;
-      height: 100%;
-      background: rgba(20,20,20,0.95);
-      color: white;
-      z-index: 40;
-      padding: 20px;
-      transition: left 0.3s ease;
-      overflow-y: auto;
-    }
-
+    .panel { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: rgba(20,20,20,0.95); color: white; z-index: 40; padding: 20px; transition: left 0.3s ease; overflow-y: auto; }
     .panel.open { left: 0; }
 
-    .overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 30;
-      display: none;
-    }
-
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30; display: none; }
     .overlay.show { display: block; }
 
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: none;
-    }
+    .close-btn { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; cursor: pointer; display: none; }
   </style>
 </head>
 <body>
