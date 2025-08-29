@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACAB - 1312</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .slideshow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .slideshow img {
+      position: absolute;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.15;
+      animation: fade 25s infinite;
+    }
+
+    .slideshow img:nth-child(1) { animation-delay: 0s; }
+    .slideshow img:nth-child(2) { animation-delay: 5s; }
+    .slideshow img:nth-child(3) { animation-delay: 10s; }
+    .slideshow img:nth-child(4) { animation-delay: 15s; }
+    .slideshow img:nth-child(5) { animation-delay: 20s; }
+
+    @keyframes fade {
+      0% { opacity: 0.15; }
+      20% { opacity: 0.15; }
+      25% { opacity: 0; }
+      95% { opacity: 0; }
+      100% { opacity: 0.15; }
+    }
+
+    .center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .center h1 {
+      font-size: 3rem;
+    }
+
+    .center a {
+      display: block;
+      margin-top: 10px;
+      color: #0af;
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+
+    .marquee-container {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      background: rgba(0,0,0,0.6);
+      white-space: nowrap;
+      z-index: 20;
+    }
+
+    .marquee {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 15s linear infinite;
+    }
+
+    .marquee span {
+      margin-right: 50px;
+      display: inline-block;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .now-playing {
+      position: fixed;
+      bottom: 10px;
+      right: 10px; /* dipindahkan ke kanan */
+      color: #aaa;
+      font-size: 1rem;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+    }
+
+    .visualizer {
+      display: flex;
+      margin-right: 8px;
+    }
+
+    .bar {
+      width: 4px;
+      height: 10px;
+      background: #aaa;
+      margin: 0 1px;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.4s; }
+    .bar:nth-child(3) { animation-delay: 0.8s; }
+    .bar:nth-child(4) { animation-delay: 1.2s; }
+
+    @keyframes bounce {
+      0%, 100% { height: 5px; }
+      50% { height: 20px; }
+    }
+
+    .menu-btn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 2rem;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 50;
+    }
+
+    .menu-hint {
+      position: fixed;
+      top: 50px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #fff;
+      animation: blink 1.5s infinite;
+      z-index: 45;
+      max-width: 180px;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .panel {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background: rgba(20,20,20,0.95);
+      color: white;
+      z-index: 40;
+      padding: 20px;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .panel.open { left: 0; }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 30;
+      display: none;
+    }
+
+    .overlay.show { display: block; }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="slideshow">
+    <img src="img1.jpeg" alt="">
+    <img src="img2.jpeg" alt="">
+    <img src="img3.jpeg" alt="">
+    <img src="img4.jpeg" alt="">
+    <img src="img5.jpeg" alt="">
+  </div>
+
+  <div class="marquee-container">
+    <div class="marquee">
+      <span>Joshua, Afif, Gamma, Sekarang Affan, selanjutnya siapa? Aku? Kalian? Kita?</span>
+      <span>#RESETINDONESIA</span>
+      <span>Ku doakan kita semua masuk neraka</span>
+      <span>28 August 2025.</span>
+    </div>
+  </div>
+
+  <div class="center">
+    <h1>ACAB - 1312</h1>
+    <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- ??? -</a>
+  </div>
+
+  <div class="now-playing">
+    <div class="visualizer">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <span id="nowPlayingText">Now Playing: Matahari Tenggelam - Hindia</span>
+  </div>
+
+  <button class="menu-btn" id="menuBtn">&#8942;</button>
+  <div class="menu-hint" id="menuHint">👆 Click here to see more stuff.</div>
+
+  <div class="panel" id="panel">
+    <span class="close-btn" id="closeBtn">✖</span>
+    <h2>Artikel</h2>
+    <ul>
+      <li><a href="https://example.com" target="_blank">Berita 1</a></li>
+      <li><a href="https://example.com" target="_blank">Berita 2</a></li>
+    </ul>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <audio id="audioPlayer" src="song.mp3" autoplay loop></audio>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const panel = document.getElementById('panel');
+    const overlay = document.getElementById('overlay');
+    const closeBtn = document.getElementById('closeBtn');
+    const menuHint = document.getElementById('menuHint');
+
+    menuBtn.addEventListener('click', () => {
+      panel.classList.add('open');
+      overlay.classList.add('show');
+      closeBtn.style.display = 'block';
+      menuBtn.style.display = 'none';
+      menuHint.style.display = 'none';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      panel.classList.remove('open');
+      overlay.classList.remove('show');
+      closeBtn.style.display = 'none';
+      menuBtn.style.display = 'block';
+    });
+
+    overlay.addEventListener('click', () => {
+      panel.classList.remove('open');
+      overlay.classList.remove('show');
+      closeBtn.style.display = 'none';
+      menuBtn.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
