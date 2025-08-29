@@ -74,14 +74,14 @@
   .menu-btn {
     position: fixed; top:10px; left:10px;
     width:35px; height:35px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.2);
     border:none; border-radius:5px;
     font-size:1.5rem; color:#fff; cursor:pointer;
     z-index:60; display:flex; justify-content:center; align-items:center;
   }
   .menu-hint {
     position: fixed; top:50px; left:10px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.6);
     padding:5px 8px;
     border-radius:5px;
     font-size:0.85rem;
@@ -90,8 +90,12 @@
   }
 
   .panel {
-    position: fixed; top:0; left:-260px;
-    width:80%; max-width:260px; height:100%;
+    position: fixed;
+    top:0;
+    left:-100%; /* pastikan panel sepenuhnya tersembunyi */
+    width:80%; 
+    max-width:260px; 
+    height:100%;
     background: rgba(0,0,0,0.95);
     color:#fff; z-index:50;
     padding:15px;
@@ -190,6 +194,7 @@
 </div>
 
 <script>
+  // Panel Artikel
   const menuBtn = document.getElementById('menuBtn');
   const panel = document.getElementById('panel');
   const overlay = document.getElementById('overlay');
@@ -259,6 +264,5 @@
   }
   showNextText();
 </script>
-
 </body>
 </html>
