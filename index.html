@@ -13,6 +13,7 @@
       overflow: hidden;
     }
 
+    /* Slideshow */
     .slideshow {
       position: fixed;
       top: 0; left: 0;
@@ -46,39 +47,53 @@
       100% { opacity: 0; }
     }
 
+    /* Center text with block */
     .center {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      background: rgba(0,0,0,0.6); /* block di belakang teks */
+      background: rgba(0,0,0,0.6);
       padding: 20px 40px;
       border-radius: 10px;
     }
 
-    .center h1 { font-size: 3rem; margin:0; }
-    .center a { display: block; margin-top: 10px; text-decoration: none; font-size: 1.2rem; color: red; } /* warna merah untuk ??? */
+    .center h1 { font-size: 3rem; margin: 0; }
+    .center a { display: block; margin-top: 10px; text-decoration: none; font-size: 1.2rem; color: red; }
 
+    /* Running text (marquee) */
     .marquee-container {
       position: fixed;
-      top: 0;
+      top: 10px;
       width: 100%;
       overflow: hidden;
       background: rgba(0,0,0,0.6);
       white-space: nowrap;
       z-index: 20;
+      text-align: center;
+      padding: 10px 0;
+      border-radius: 10px;
+      box-sizing: border-box;
     }
 
-    .marquee {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 15s linear infinite;
+    .marquee span {
+      display: none;
+      font-size: 1rem;
+      color: white;
+      padding: 0 20px;
+      white-space: normal;
+      line-height: 1.4;
+      animation: none;
     }
 
-    .marquee span { margin-right: 50px; display: inline-block; }
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
 
-    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
+    /* Now Playing */
     .now-playing {
       position: fixed;
       bottom: 10px;
@@ -98,6 +113,7 @@
 
     @keyframes bounce { 0%, 100% { height: 5px; } 50% { height: 20px; } }
 
+    /* Panel Artikel */
     .menu-btn { position: fixed; top: 10px; left: 10px; font-size: 2rem; color: white; background: none; border: none; cursor: pointer; z-index: 50; }
     .menu-hint { position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; color: #fff; animation: blink 1.5s infinite; z-index: 45; max-width: 180px; }
     @keyframes blink { 50% { opacity: 0; } }
@@ -112,6 +128,7 @@
   </style>
 </head>
 <body>
+  <!-- Slideshow -->
   <div class="slideshow">
     <img src="img1.jpeg" alt="">
     <img src="img2.jpeg" alt="">
@@ -120,6 +137,7 @@
     <img src="img5.jpeg" alt="">
   </div>
 
+  <!-- Running Text -->
   <div class="marquee-container">
     <div class="marquee">
       <span>Joshua, Afif, Gamma, Sekarang Affan, selanjutnya siapa? Aku? Kalian? Kita?</span>
@@ -129,11 +147,13 @@
     </div>
   </div>
 
+  <!-- Center Text -->
   <div class="center">
     <h1>ACAB - 1312</h1>
     <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- ??? -</a>
   </div>
 
+  <!-- Now Playing -->
   <div class="now-playing">
     <div class="visualizer">
       <div class="bar"></div>
@@ -144,6 +164,7 @@
     <span id="nowPlayingText">Now Playing: Matahari Tenggelam - Hindia</span>
   </div>
 
+  <!-- Panel Artikel -->
   <button class="menu-btn" id="menuBtn">&#8942;</button>
   <div class="menu-hint" id="menuHint">👆 Click here to see more stuff.</div>
 
@@ -158,21 +179,21 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <audio id="audioPlayer" src="song.mp3" loop></audio> <!-- autoplay dihapus -->
+  <!-- Audio (tidak autoplay) -->
+  <audio id="audioPlayer" src="song.mp3" loop></audio>
 
   <script>
+    // Panel menu
     const menuBtn = document.getElementById('menuBtn');
     const panel = document.getElementById('panel');
     const overlay = document.getElementById('overlay');
     const closeBtn = document.getElementById('closeBtn');
-    const menuHint = document.getElementById('menuHint');
 
     menuBtn.addEventListener('click', () => {
       panel.classList.add('open');
       overlay.classList.add('show');
       closeBtn.style.display = 'block';
       menuBtn.style.display = 'none';
-      menuHint.style.display = 'none';
     });
 
     closeBtn.addEventListener('click', () => {
@@ -188,6 +209,22 @@
       closeBtn.style.display = 'none';
       menuBtn.style.display = 'block';
     });
+
+    // Marquee satu per satu
+    const texts = document.querySelectorAll('.marquee span');
+    let index = 0;
+
+    function showNextText() {
+      texts.forEach(t => t.style.display = 'none');
+      const current = texts[index];
+      current.style.display = 'inline-block';
+      current.style.animation = 'fadeInOut 5s forwards';
+
+      index = (index + 1) % texts.length;
+      setTimeout(showNextText, 5000);
+    }
+
+    showNextText();
   </script>
 </body>
 </html>
