@@ -3,121 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACAB - 1312</title>
+<title>ACAB - 1312 Gallery with Articles</title>
 <style>
   body {
-    margin: 0;
-    background: black;
+    margin:0;
     font-family: Arial, sans-serif;
-    overflow: hidden;
+    background: black;
     color: white;
+    overflow-x: hidden;
   }
 
-  /* Slideshow */
-  .slideshow {
+  /* Marquee */
+  .marquee-container {
     position: fixed;
-    top:0; left:0;
-    width: 100%; height: 100%;
-    z-index: -1;
-  }
-
-  .slideshow img {
-    position: absolute;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    user-drag: none;
-    user-select: none;
-    pointer-events: none;
-    opacity: 0;
-    animation: slidefade 25s infinite;
-  }
-
-  .slideshow img:nth-child(1){ animation-delay:0s; }
-  .slideshow img:nth-child(2){ animation-delay:5s; }
-  .slideshow img:nth-child(3){ animation-delay:10s; }
-  .slideshow img:nth-child(4){ animation-delay:15s; }
-  .slideshow img:nth-child(5){ animation-delay:20s; }
-
-  @keyframes slidefade{
-    0%{opacity:0;}
-    10%{opacity:1;}
-    20%{opacity:1;}
-    30%{opacity:0;}
-    100%{opacity:0;}
-  }
-
-  /* Center block */
-  .center {
-    position: absolute;
-    top:50%; left:50%;
-    transform: translate(-50%, -50%);
+    top:10px;
+    width:100%;
     text-align:center;
+    background: rgba(0,0,0,0.7);
+    padding:10px 0;
+    z-index:50;
+    border-radius:10px;
+  }
+  .marquee span { display:none; font-size:1rem; line-height:1.4; }
+  @keyframes fadeInOut { 0%{opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{opacity:0;} }
+
+  /* Center */
+  .center {
+    text-align:center;
+    margin-top:80px;
     background: rgba(0,0,0,0.6);
     padding: 20px 40px;
     border-radius: 15px;
     max-width: 90%;
-    animation: fadeInCenter 2s ease-out;
+    margin-left:auto;
+    margin-right:auto;
   }
+  .center h1{font-size:2.5rem;margin:0;}
+  .center a{color:red;text-decoration:none;font-size:1.2rem;display:block;margin-top:10px;}
+  .center a:hover{color:#0af;}
 
-  .center h1 { font-size:3rem; margin:0; }
-  .center a { display:block; margin-top:10px; text-decoration:none; font-size:1.2rem; color:red; transition: all 0.3s; }
-  .center a:hover { color: #0af; }
-
-  @keyframes fadeInCenter {
-    from { opacity:0; transform: translate(-50%, -60%);}
-    to { opacity:1; transform: translate(-50%, -50%);}
-  }
-
-  /* Running text */
-  .marquee-container {
-    position: fixed;
-    top: 10px;
-    width: 100%;
-    background: rgba(0,0,0,0.6);
-    padding:10px 0;
-    border-radius:10px;
-    text-align:center;
-    z-index:20;
-  }
-
-  .marquee span {
-    display: none;
-    font-size:1rem;
-    color:white;
-    padding: 0 20px;
-    line-height:1.4;
-  }
-
-  @keyframes fadeInOut {
-    0%{opacity:0;}
-    10%{opacity:1;}
-    90%{opacity:1;}
-    100%{opacity:0;}
-  }
-
-  /* Now Playing */
-  .now-playing {
-    position: fixed;
-    bottom:10px;
-    right:10px;
-    color:#aaa;
+  /* Gallery */
+  .gallery-container {
+    margin-top:50px;
     display:flex;
-    align-items:center;
-    font-size:1rem;
-    z-index:20;
+    overflow-x:auto;
+    scroll-behavior:smooth;
+    padding:20px 10px;
+    gap:10px;
   }
-  .visualizer { display:flex; margin-right:8px; }
-  .bar { width:4px; height:10px; background:#aaa; margin:0 1px; animation:bounce 2s infinite ease-in-out; }
-  .bar:nth-child(2){animation-delay:0.4s;}
-  .bar:nth-child(3){animation-delay:0.8s;}
-  .bar:nth-child(4){animation-delay:1.2s;}
+  .gallery-container::-webkit-scrollbar { display:none; }
+  .gallery-item {
+    min-width:200px;
+    flex:0 0 auto;
+    border-radius:10px;
+    overflow:hidden;
+    cursor:pointer;
+    transition: transform 0.3s;
+  }
+  .gallery-item img { width:100%; display:block; object-fit:cover; user-drag:none; user-select:none; }
+  .gallery-item:hover{transform: scale(1.05);}
 
-  @keyframes bounce{0%,100%{height:5px;}50%{height:20px;}}
+  /* Audio hidden */
+  audio { display:none; }
 
   /* Panel Artikel */
   .menu-btn {
     position: fixed; top:10px; left:10px;
-    font-size:2rem; color:white; background:none; border:none; cursor:pointer; z-index:50;
+    font-size:2rem; color:white; background:none; border:none; cursor:pointer; z-index:60;
   }
 
   .menu-hint {
@@ -128,7 +80,7 @@
     font-size:0.9rem;
     color:#fff;
     animation: blink 1.5s infinite;
-    z-index:45;
+    z-index:55;
     max-width:180px;
   }
   @keyframes blink{50%{opacity:0;}}
@@ -139,7 +91,7 @@
     height:100%;
     background: rgba(20,20,20,0.95);
     color:white;
-    z-index:40;
+    z-index:50;
     padding:20px;
     transition:left 0.3s ease;
     overflow-y:auto;
@@ -151,7 +103,7 @@
     position: fixed; top:0; left:0;
     width:100%; height:100%;
     background: rgba(0,0,0,0.5);
-    z-index:30; display:none;
+    z-index:45; display:none;
   }
   .overlay.show{display:block;}
 
@@ -171,107 +123,93 @@
 </style>
 </head>
 <body>
-  <!-- Slideshow -->
-  <div class="slideshow">
-    <img src="img1.jpeg" alt="">
-    <img src="img2.jpeg" alt="">
-    <img src="img3.jpeg" alt="">
-    <img src="img4.jpeg" alt="">
-    <img src="img5.jpeg" alt="">
+
+<!-- Marquee -->
+<div class="marquee-container">
+  <div class="marquee">
+    <span>Joshua, Afif, Gamma, Sekarang Affan, selanjutnya siapa? Aku? Kalian? Kita?</span>
+    <span>#RESETINDONESIA</span>
+    <span>Ku doakan kita semua masuk neraka</span>
+    <span>28 August 2025.</span>
   </div>
+</div>
 
-  <!-- Running Text -->
-  <div class="marquee-container">
-    <div class="marquee">
-      <span>Joshua, Afif, Gamma, Sekarang Affan, selanjutnya siapa? Aku? Kalian? Kita?</span>
-      <span>#RESETINDONESIA</span>
-      <span>Ku doakan kita semua masuk neraka</span>
-      <span>28 August 2025.</span>
-    </div>
-  </div>
+<!-- Center -->
+<div class="center">
+  <h1>ACAB - 1312</h1>
+  <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- ??? -</a>
+</div>
 
-  <!-- Center -->
-  <div class="center">
-    <h1>ACAB - 1312</h1>
-    <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- ??? -</a>
-  </div>
+<!-- Gallery -->
+<div class="gallery-container">
+  <div class="gallery-item"><img src="img1.jpeg" alt=""></div>
+  <div class="gallery-item"><img src="img2.jpeg" alt=""></div>
+  <div class="gallery-item"><img src="img3.jpeg" alt=""></div>
+  <div class="gallery-item"><img src="img4.jpeg" alt=""></div>
+  <div class="gallery-item"><img src="img5.jpeg" alt=""></div>
+</div>
 
-  <!-- Now Playing -->
-  <div class="now-playing">
-    <div class="visualizer">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-    </div>
-    <span id="nowPlayingText">Now Playing: Matahari Tenggelam - Hindia</span>
-  </div>
+<!-- Panel Artikel -->
+<button class="menu-btn" id="menuBtn">&#8942;</button>
+<div class="menu-hint" id="menuHint">👆 Click here to see articles</div>
+<div class="panel" id="panel">
+  <span class="close-btn" id="closeBtn">✖</span>
+  <h2>Artikel</h2>
+  <ul>
+    <li><a href="https://example.com" target="_blank">Berita 1</a></li>
+    <li><a href="https://example.com" target="_blank">Berita 2</a></li>
+    <li><a href="https://example.com" target="_blank">Berita 3</a></li>
+  </ul>
+</div>
+<div class="overlay" id="overlay"></div>
 
-  <!-- Panel -->
-  <button class="menu-btn" id="menuBtn">&#8942;</button>
-  <div class="menu-hint" id="menuHint">👆 Click here to see more stuff.</div>
-
-  <div class="panel" id="panel">
-    <span class="close-btn" id="closeBtn">✖</span>
-    <h2>Artikel</h2>
-    <ul>
-      <li><a href="https://example.com" target="_blank">Berita 1</a></li>
-      <li><a href="https://example.com" target="_blank">Berita 2</a></li>
-    </ul>
-  </div>
-
-  <div class="overlay" id="overlay"></div>
-
-  <!-- Audio -->
-  <audio id="audioPlayer" src="song.mp3" loop></audio>
+<!-- Audio -->
+<audio id="audioPlayer" src="song.mp3" autoplay loop></audio>
 
 <script>
+  // Marquee one by one
+  const texts = document.querySelectorAll('.marquee span');
+  let index=0;
+  function showNextText(){
+    texts.forEach(t=>t.style.display='none');
+    const current = texts[index];
+    current.style.display='inline-block';
+    current.style.animation='fadeInOut 5s forwards';
+    index=(index+1)%texts.length;
+    setTimeout(showNextText,5000);
+  }
+  showNextText();
+
   // Panel menu
   const menuBtn = document.getElementById('menuBtn');
   const panel = document.getElementById('panel');
   const overlay = document.getElementById('overlay');
   const closeBtn = document.getElementById('closeBtn');
   const menuHint = document.getElementById('menuHint');
+  let hintClicked=false;
 
-  let hintClicked = false;
-
-  menuBtn.addEventListener('click', () => {
+  menuBtn.addEventListener('click', ()=>{
     panel.classList.add('open');
     overlay.classList.add('show');
-    closeBtn.style.display = 'block';
-    menuBtn.style.display = 'none';
-    if(!hintClicked){
-      menuHint.style.display = 'none'; // hilang permanen setelah pertama kali
-      hintClicked = true;
-    }
+    closeBtn.style.display='block';
+    menuBtn.style.display='none';
+    if(!hintClicked){ menuHint.style.display='none'; hintClicked=true; }
   });
 
-  closeBtn.addEventListener('click', () => {
+  closeBtn.addEventListener('click', ()=>{
     panel.classList.remove('open');
     overlay.classList.remove('show');
-    closeBtn.style.display = 'none';
-    menuBtn.style.display = 'block';
+    closeBtn.style.display='none';
+    menuBtn.style.display='block';
   });
 
-  overlay.addEventListener('click', () => {
+  overlay.addEventListener('click', ()=>{
     panel.classList.remove('open');
     overlay.classList.remove('show');
-    closeBtn.style.display = 'none';
-    menuBtn.style.display = 'block';
+    closeBtn.style.display='none';
+    menuBtn.style.display='block';
   });
-
-  // Marquee satu per satu
-  const texts = document.querySelectorAll('.marquee span');
-  let index = 0;
-  function showNextText(){
-    texts.forEach(t=>t.style.display='none');
-    const current = texts[index];
-    current.style.display='inline-block';
-    current.style.animation = 'fadeInOut 5s forwards';
-    index = (index+1)%texts.length;
-    setTimeout(showNextText,5000);
-  }
-  showNextText();
 </script>
+
 </body>
 </html>
