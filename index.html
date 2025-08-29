@@ -56,12 +56,13 @@
       background: rgba(0,0,0,0.6);
       padding: 20px 40px;
       border-radius: 10px;
+      max-width: 90%;
     }
 
     .center h1 { font-size: 3rem; margin: 0; }
     .center a { display: block; margin-top: 10px; text-decoration: none; font-size: 1.2rem; color: red; }
 
-    /* Running text (marquee) */
+    /* Running text */
     .marquee-container {
       position: fixed;
       top: 10px;
@@ -103,6 +104,7 @@
       z-index: 20;
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .visualizer { display: flex; margin-right: 8px; }
@@ -118,13 +120,21 @@
     .menu-hint { position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; color: #fff; animation: blink 1.5s infinite; z-index: 45; max-width: 180px; }
     @keyframes blink { 50% { opacity: 0; } }
 
-    .panel { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: rgba(20,20,20,0.95); color: white; z-index: 40; padding: 20px; transition: left 0.3s ease; overflow-y: auto; }
+    .panel { position: fixed; top: 0; left: -300px; width: 80%; max-width: 300px; height: 100%; background: rgba(20,20,20,0.95); color: white; z-index: 40; padding: 20px; transition: left 0.3s ease; overflow-y: auto; }
     .panel.open { left: 0; }
 
     .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30; display: none; }
     .overlay.show { display: block; }
 
     .close-btn { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; cursor: pointer; display: none; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .center h1 { font-size: 2rem; }
+      .center a { font-size: 1rem; }
+      .marquee span { font-size: 0.9rem; padding: 0 10px; }
+      .menu-btn { font-size: 1.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -179,7 +189,7 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- Audio (tidak autoplay) -->
+  <!-- Audio -->
   <audio id="audioPlayer" src="song.mp3" loop></audio>
 
   <script>
@@ -188,12 +198,14 @@
     const panel = document.getElementById('panel');
     const overlay = document.getElementById('overlay');
     const closeBtn = document.getElementById('closeBtn');
+    const menuHint = document.getElementById('menuHint');
 
     menuBtn.addEventListener('click', () => {
       panel.classList.add('open');
       overlay.classList.add('show');
       closeBtn.style.display = 'block';
       menuBtn.style.display = 'none';
+      menuHint.style.display = 'none'; // hilang saat dipencet
     });
 
     closeBtn.addEventListener('click', () => {
@@ -201,6 +213,7 @@
       overlay.classList.remove('show');
       closeBtn.style.display = 'none';
       menuBtn.style.display = 'block';
+      menuHint.style.display = 'block'; // muncul lagi saat ditutup
     });
 
     overlay.addEventListener('click', () => {
@@ -208,22 +221,20 @@
       overlay.classList.remove('show');
       closeBtn.style.display = 'none';
       menuBtn.style.display = 'block';
+      menuHint.style.display = 'block';
     });
 
     // Marquee satu per satu
     const texts = document.querySelectorAll('.marquee span');
     let index = 0;
-
     function showNextText() {
       texts.forEach(t => t.style.display = 'none');
       const current = texts[index];
       current.style.display = 'inline-block';
       current.style.animation = 'fadeInOut 5s forwards';
-
       index = (index + 1) % texts.length;
       setTimeout(showNextText, 5000);
     }
-
     showNextText();
   </script>
 </body>
