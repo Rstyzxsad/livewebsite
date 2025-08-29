@@ -1,141 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACAB - 1312</title>
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACAB - 1312</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    color: white;
+  }
 
-    /* Slideshow */
-    .slideshow {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-    }
+  /* Slideshow */
+  .slideshow {
+    position: fixed;
+    top:0; left:0;
+    width: 100%; height: 100%;
+    z-index: -1;
+  }
 
-    .slideshow img {
-      position: absolute;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      user-drag: none;
-      user-select: none;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      opacity: 0;
-      animation: slidefade 25s infinite;
-    }
+  .slideshow img {
+    position: absolute;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    user-drag: none;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0;
+    animation: slidefade 25s infinite;
+  }
 
-    .slideshow img:nth-child(1) { animation-delay: 0s; }
-    .slideshow img:nth-child(2) { animation-delay: 5s; }
-    .slideshow img:nth-child(3) { animation-delay: 10s; }
-    .slideshow img:nth-child(4) { animation-delay: 15s; }
-    .slideshow img:nth-child(5) { animation-delay: 20s; }
+  .slideshow img:nth-child(1){ animation-delay:0s; }
+  .slideshow img:nth-child(2){ animation-delay:5s; }
+  .slideshow img:nth-child(3){ animation-delay:10s; }
+  .slideshow img:nth-child(4){ animation-delay:15s; }
+  .slideshow img:nth-child(5){ animation-delay:20s; }
 
-    @keyframes slidefade {
-      0% { opacity: 0; }
-      10% { opacity: 1; }
-      20% { opacity: 1; }
-      30% { opacity: 0; }
-      100% { opacity: 0; }
-    }
+  @keyframes slidefade{
+    0%{opacity:0;}
+    10%{opacity:1;}
+    20%{opacity:1;}
+    30%{opacity:0;}
+    100%{opacity:0;}
+  }
 
-    /* Center text with block */
-    .center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      background: rgba(0,0,0,0.6);
-      padding: 20px 40px;
-      border-radius: 10px;
-      max-width: 90%;
-    }
+  /* Center block */
+  .center {
+    position: absolute;
+    top:50%; left:50%;
+    transform: translate(-50%, -50%);
+    text-align:center;
+    background: rgba(0,0,0,0.6);
+    padding: 20px 40px;
+    border-radius: 15px;
+    max-width: 90%;
+    animation: fadeInCenter 2s ease-out;
+  }
 
-    .center h1 { font-size: 3rem; margin: 0; }
-    .center a { display: block; margin-top: 10px; text-decoration: none; font-size: 1.2rem; color: red; }
+  .center h1 { font-size:3rem; margin:0; }
+  .center a { display:block; margin-top:10px; text-decoration:none; font-size:1.2rem; color:red; transition: all 0.3s; }
+  .center a:hover { color: #0af; }
 
-    /* Running text */
-    .marquee-container {
-      position: fixed;
-      top: 10px;
-      width: 100%;
-      overflow: hidden;
-      background: rgba(0,0,0,0.6);
-      white-space: nowrap;
-      z-index: 20;
-      text-align: center;
-      padding: 10px 0;
-      border-radius: 10px;
-      box-sizing: border-box;
-    }
+  @keyframes fadeInCenter {
+    from { opacity:0; transform: translate(-50%, -60%);}
+    to { opacity:1; transform: translate(-50%, -50%);}
+  }
 
-    .marquee span {
-      display: none;
-      font-size: 1rem;
-      color: white;
-      padding: 0 20px;
-      white-space: normal;
-      line-height: 1.4;
-      animation: none;
-    }
+  /* Running text */
+  .marquee-container {
+    position: fixed;
+    top: 10px;
+    width: 100%;
+    background: rgba(0,0,0,0.6);
+    padding:10px 0;
+    border-radius:10px;
+    text-align:center;
+    z-index:20;
+  }
 
-    @keyframes fadeInOut {
-      0% { opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { opacity: 0; }
-    }
+  .marquee span {
+    display: none;
+    font-size:1rem;
+    color:white;
+    padding: 0 20px;
+    line-height:1.4;
+  }
 
-    /* Now Playing */
-    .now-playing {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      color: #aaa;
-      font-size: 1rem;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  @keyframes fadeInOut {
+    0%{opacity:0;}
+    10%{opacity:1;}
+    90%{opacity:1;}
+    100%{opacity:0;}
+  }
 
-    .visualizer { display: flex; margin-right: 8px; }
-    .bar { width: 4px; height: 10px; background: #aaa; margin: 0 1px; animation: bounce 2s infinite ease-in-out; }
-    .bar:nth-child(2) { animation-delay: 0.4s; }
-    .bar:nth-child(3) { animation-delay: 0.8s; }
-    .bar:nth-child(4) { animation-delay: 1.2s; }
+  /* Now Playing */
+  .now-playing {
+    position: fixed;
+    bottom:10px;
+    right:10px;
+    color:#aaa;
+    display:flex;
+    align-items:center;
+    font-size:1rem;
+    z-index:20;
+  }
+  .visualizer { display:flex; margin-right:8px; }
+  .bar { width:4px; height:10px; background:#aaa; margin:0 1px; animation:bounce 2s infinite ease-in-out; }
+  .bar:nth-child(2){animation-delay:0.4s;}
+  .bar:nth-child(3){animation-delay:0.8s;}
+  .bar:nth-child(4){animation-delay:1.2s;}
 
-    @keyframes bounce { 0%, 100% { height: 5px; } 50% { height: 20px; } }
+  @keyframes bounce{0%,100%{height:5px;}50%{height:20px;}}
 
-    /* Panel Artikel */
-    .menu-btn { position: fixed; top: 10px; left: 10px; font-size: 2rem; color: white; background: none; border: none; cursor: pointer; z-index: 50; }
-    .menu-hint { position: fixed; top: 50px; left: 10px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 8px; font-size: 0.9rem; color: #fff; animation: blink 1.5s infinite; z-index: 45; max-width: 180px; }
-    @keyframes blink { 50% { opacity: 0; } }
+  /* Panel Artikel */
+  .menu-btn {
+    position: fixed; top:10px; left:10px;
+    font-size:2rem; color:white; background:none; border:none; cursor:pointer; z-index:50;
+  }
 
-    .panel { position: fixed; top: 0; left: -300px; width: 80%; max-width: 300px; height: 100%; background: rgba(20,20,20,0.95); color: white; z-index: 40; padding: 20px; transition: left 0.3s ease; overflow-y: auto; }
-    .panel.open { left: 0; }
+  .menu-hint {
+    position: fixed; top:50px; left:10px;
+    background: rgba(0,0,0,0.6);
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:0.9rem;
+    color:#fff;
+    animation: blink 1.5s infinite;
+    z-index:45;
+    max-width:180px;
+  }
+  @keyframes blink{50%{opacity:0;}}
 
-    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 30; display: none; }
-    .overlay.show { display: block; }
+  .panel {
+    position: fixed; top:0; left:-300px;
+    width:80%; max-width:300px;
+    height:100%;
+    background: rgba(20,20,20,0.95);
+    color:white;
+    z-index:40;
+    padding:20px;
+    transition:left 0.3s ease;
+    overflow-y:auto;
+    border-radius:0 15px 15px 0;
+  }
+  .panel.open{left:0;}
 
-    .close-btn { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; cursor: pointer; display: none; }
+  .overlay {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.5);
+    z-index:30; display:none;
+  }
+  .overlay.show{display:block;}
 
-    /* Responsive */
-    @media (max-width: 600px) {
-      .center h1 { font-size: 2rem; }
-      .center a { font-size: 1rem; }
-      .marquee span { font-size: 0.9rem; padding: 0 10px; }
-      .menu-btn { font-size: 1.8rem; }
-    }
-  </style>
+  .close-btn {
+    position:absolute; top:10px; right:10px;
+    font-size:1.5rem; cursor:pointer; display:none;
+  }
+
+  /* Responsive */
+  @media(max-width:600px){
+    .center h1{font-size:2rem;}
+    .center a{font-size:1rem;}
+    .marquee span{font-size:0.9rem;padding:0 10px;}
+    .menu-btn{font-size:1.8rem;}
+    .panel{width:90%;}
+  }
+</style>
 </head>
 <body>
   <!-- Slideshow -->
@@ -157,7 +190,7 @@
     </div>
   </div>
 
-  <!-- Center Text -->
+  <!-- Center -->
   <div class="center">
     <h1>ACAB - 1312</h1>
     <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- ??? -</a>
@@ -174,7 +207,7 @@
     <span id="nowPlayingText">Now Playing: Matahari Tenggelam - Hindia</span>
   </div>
 
-  <!-- Panel Artikel -->
+  <!-- Panel -->
   <button class="menu-btn" id="menuBtn">&#8942;</button>
   <div class="menu-hint" id="menuHint">👆 Click here to see more stuff.</div>
 
@@ -192,50 +225,53 @@
   <!-- Audio -->
   <audio id="audioPlayer" src="song.mp3" loop></audio>
 
-  <script>
-    // Panel menu
-    const menuBtn = document.getElementById('menuBtn');
-    const panel = document.getElementById('panel');
-    const overlay = document.getElementById('overlay');
-    const closeBtn = document.getElementById('closeBtn');
-    const menuHint = document.getElementById('menuHint');
+<script>
+  // Panel menu
+  const menuBtn = document.getElementById('menuBtn');
+  const panel = document.getElementById('panel');
+  const overlay = document.getElementById('overlay');
+  const closeBtn = document.getElementById('closeBtn');
+  const menuHint = document.getElementById('menuHint');
 
-    menuBtn.addEventListener('click', () => {
-      panel.classList.add('open');
-      overlay.classList.add('show');
-      closeBtn.style.display = 'block';
-      menuBtn.style.display = 'none';
-      menuHint.style.display = 'none'; // hilang saat dipencet
-    });
+  let hintClicked = false;
 
-    closeBtn.addEventListener('click', () => {
-      panel.classList.remove('open');
-      overlay.classList.remove('show');
-      closeBtn.style.display = 'none';
-      menuBtn.style.display = 'block';
-      menuHint.style.display = 'block'; // muncul lagi saat ditutup
-    });
-
-    overlay.addEventListener('click', () => {
-      panel.classList.remove('open');
-      overlay.classList.remove('show');
-      closeBtn.style.display = 'none';
-      menuBtn.style.display = 'block';
-      menuHint.style.display = 'block';
-    });
-
-    // Marquee satu per satu
-    const texts = document.querySelectorAll('.marquee span');
-    let index = 0;
-    function showNextText() {
-      texts.forEach(t => t.style.display = 'none');
-      const current = texts[index];
-      current.style.display = 'inline-block';
-      current.style.animation = 'fadeInOut 5s forwards';
-      index = (index + 1) % texts.length;
-      setTimeout(showNextText, 5000);
+  menuBtn.addEventListener('click', () => {
+    panel.classList.add('open');
+    overlay.classList.add('show');
+    closeBtn.style.display = 'block';
+    menuBtn.style.display = 'none';
+    if(!hintClicked){
+      menuHint.style.display = 'none'; // hilang permanen setelah pertama kali
+      hintClicked = true;
     }
-    showNextText();
-  </script>
+  });
+
+  closeBtn.addEventListener('click', () => {
+    panel.classList.remove('open');
+    overlay.classList.remove('show');
+    closeBtn.style.display = 'none';
+    menuBtn.style.display = 'block';
+  });
+
+  overlay.addEventListener('click', () => {
+    panel.classList.remove('open');
+    overlay.classList.remove('show');
+    closeBtn.style.display = 'none';
+    menuBtn.style.display = 'block';
+  });
+
+  // Marquee satu per satu
+  const texts = document.querySelectorAll('.marquee span');
+  let index = 0;
+  function showNextText(){
+    texts.forEach(t=>t.style.display='none');
+    const current = texts[index];
+    current.style.display='inline-block';
+    current.style.animation = 'fadeInOut 5s forwards';
+    index = (index+1)%texts.length;
+    setTimeout(showNextText,5000);
+  }
+  showNextText();
+</script>
 </body>
 </html>
