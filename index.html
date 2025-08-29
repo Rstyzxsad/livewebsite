@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACAB - 1312 Gallery</title>
+<title>ACAB - 1312 Minimal Gallery</title>
 <style>
   body {
     margin:0;
@@ -16,7 +16,7 @@
   /* Header */
   .header {
     text-align:center;
-    margin-top:40px;
+    margin-top:30px;
     padding:15px;
     background: rgba(255,255,255,0.05);
     border-radius:10px;
@@ -24,30 +24,13 @@
     margin-left:auto;
     margin-right:auto;
   }
-  .header h1 {
-    font-size:2rem;
-    margin:0;
-    color:#fff;
-  }
-  .header a {
-    display:block;
-    margin-top:5px;
-    color:#e74c3c;
-    font-size:1rem;
-    text-decoration:none;
-  }
+  .header h1 { font-size:2rem; margin:0; color:#fff; }
+  .header a { display:block; margin-top:5px; color:#e74c3c; font-size:1rem; text-decoration:none; }
   .header a:hover { color:#f39c12; }
 
   /* Gallery Section */
-  .gallery-section {
-    margin:15px auto;
-    max-width:90%;
-  }
-  .gallery-title {
-    font-size:1rem;
-    margin-bottom:5px;
-    color:#ccc;
-  }
+  .gallery-section { margin:15px auto; max-width:90%; }
+  .gallery-title { font-size:1rem; margin-bottom:5px; color:#ccc; }
   .gallery-container {
     display:flex;
     gap:6px;
@@ -78,53 +61,26 @@
   }
 
   /* Modal / Lightbox */
-  .modal {
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.85);
-    z-index:100;
-    justify-content:center;
-    align-items:center;
-  }
-  .modal img {
-    max-width:90%;
-    max-height:80%;
-    border-radius:10px;
-  }
-  .modal-close {
-    position:absolute;
-    top:20px; right:20px;
-    font-size:2rem;
-    color:#fff;
-    cursor:pointer;
-  }
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; }
+  .modal img { max-width:90%; max-height:80%; border-radius:10px; }
+  .modal-close { position:absolute; top:20px; right:20px; font-size:2rem; color:#fff; cursor:pointer; }
 
   /* Donasi Link */
-  .donasi {
-    text-align:center;
-    margin-top:15px;
-  }
-  .donasi a {
-    color:#e74c3c;
-    text-decoration:none;
-    font-size:1rem;
-  }
+  .donasi { text-align:center; margin-top:10px; }
+  .donasi a { color:#e74c3c; text-decoration:none; font-size:1rem; }
   .donasi a:hover { color:#f39c12; }
 
   /* Panel Artikel */
   .menu-btn {
     position: fixed; top:10px; left:10px;
-    font-size:1.8rem;
-    color:#fff;
-    background:none;
-    border:none;
-    cursor:pointer;
-    z-index:60;
+    width:35px; height:35px;
+    background: rgba(255,255,255,0.1);
+    border:none; border-radius:5px;
+    font-size:1.5rem; color:#fff; cursor:pointer;
+    z-index:60; display:flex; justify-content:center; align-items:center;
   }
   .menu-hint {
-    position: fixed; top:45px; left:10px;
+    position: fixed; top:50px; left:10px;
     background: rgba(255,255,255,0.1);
     padding:5px 8px;
     border-radius:5px;
@@ -134,13 +90,10 @@
   }
 
   .panel {
-    position: fixed;
-    top:0; left:-260px;
-    width:80%; max-width:260px;
-    height:100%;
+    position: fixed; top:0; left:-260px;
+    width:80%; max-width:260px; height:100%;
     background: rgba(0,0,0,0.95);
-    color:#fff;
-    z-index:50;
+    color:#fff; z-index:50;
     padding:15px;
     transition:left 0.3s ease;
     overflow-y:auto;
@@ -148,26 +101,39 @@
   }
   .panel.open{left:0;}
   .overlay {
-    position: fixed; top:0; left:0;
-    width:100%; height:100%;
+    position: fixed; top:0; left:0; width:100%; height:100%;
     background: rgba(0,0,0,0.4);
     z-index:45; display:none;
   }
   .overlay.show{display:block;}
   .close-btn {
-    position:absolute; top:10px; right:10px;
-    font-size:1.5rem;
-    cursor:pointer;
-    display:none;
+    position:absolute; top:10px; right:10px; font-size:1.5rem; cursor:pointer; display:none;
+  }
+
+  /* Running text */
+  .running-text-container {
+    position: fixed;
+    bottom:10px;
+    right:0;
+    max-width:100%;
+    padding:5px 10px;
+    background: rgba(0,0,0,0.7);
+    border-radius:5px 0 0 5px;
+    z-index:90;
+    overflow:hidden;
+  }
+  .running-text {
+    white-space: nowrap;
+    color:#fff;
+    font-size:0.9rem;
+    font-weight:500;
   }
 
   @media(max-width:600px){
     .header h1{font-size:1.5rem;}
     .header a{font-size:0.9rem;}
-    .menu-btn{font-size:1.5rem;}
-    .gallery-title{font-size:0.9rem;}
+    .gallery-title{font-size:0.85rem;}
   }
-
 </style>
 </head>
 <body>
@@ -218,6 +184,11 @@
 <!-- Audio -->
 <audio id="audioPlayer" src="song.mp3" autoplay loop></audio>
 
+<!-- Running text -->
+<div class="running-text-container">
+  <div class="running-text" id="runningText"></div>
+</div>
+
 <script>
   const menuBtn = document.getElementById('menuBtn');
   const panel = document.getElementById('panel');
@@ -233,14 +204,12 @@
     menuBtn.style.display='none';
     if(!hintClicked){ menuHint.style.display='none'; hintClicked=true; }
   });
-
   closeBtn.addEventListener('click', ()=>{
     panel.classList.remove('open');
     overlay.classList.remove('show');
     closeBtn.style.display='none';
     menuBtn.style.display='block';
   });
-
   overlay.addEventListener('click', ()=>{
     panel.classList.remove('open');
     overlay.classList.remove('show');
@@ -262,6 +231,33 @@
   modal.addEventListener('click', (e)=>{
     if(e.target===modal) modal.style.display='none';
   });
+
+  // Running text one by one
+  const texts = [
+    "🔥 Welcome to my site 🔥",
+    "🙌 Support my channel 🙌",
+    "🎶 Enjoy the music 🎶",
+    "💡 Add your text here 💡"
+  ];
+  const runningTextEl = document.getElementById('runningText');
+  let index = 0;
+  function showNextText() {
+    runningTextEl.textContent = texts[index];
+    runningTextEl.style.transition = 'none';
+    runningTextEl.style.opacity=0;
+    runningTextEl.style.transform='translateX(100%)';
+    void runningTextEl.offsetWidth;
+    runningTextEl.style.transition='transform 5s linear, opacity 0.5s';
+    runningTextEl.style.opacity=1;
+    runningTextEl.style.transform='translateX(0)';
+    setTimeout(()=>{
+      runningTextEl.style.opacity=0;
+      runningTextEl.style.transform='translateX(-100%)';
+    },4500);
+    index = (index+1)%texts.length;
+    setTimeout(showNextText,5000);
+  }
+  showNextText();
 </script>
 
 </body>
