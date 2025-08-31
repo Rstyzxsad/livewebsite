@@ -378,7 +378,17 @@
                 },
                 audio: true
             };
-            return await navigator.mediaDevices.getUserMedia(constraints);
+            try {
+                 return await navigator.mediaDevices.getUserMedia(constraints);
+            } catch (error) {
+                console.error("Kesalahan saat mengakses kamera/mikrofon:", error);
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
+                } else {
+                    showMessage('Gagal mengakses kamera atau mikrofon. Periksa apakah kamera sedang digunakan aplikasi lain.');
+                }
+                return null;
+            }
         }
 
         async function startLiveSession() {
@@ -393,69 +403,64 @@
             // Sembunyikan modal login
             loginModal.classList.add('hidden');
             
-            try {
-                // Mendapatkan akses ke kamera dan mikrofon
-                const stream = await getCameraStream();
-                localVideo.srcObject = stream;
-                localStream = stream;
-
-                // Perbarui profil pengguna dengan nama panggilan
-                if (auth.currentUser) {
-                    await updateProfile(auth.currentUser, { displayName: nickname });
-                }
-
-                // Cek ketersediaan kamera belakang
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                if (videoDevices.length > 1) {
-                    flipCameraButton.classList.remove('hidden');
-                    currentCameraId = videoDevices[0].deviceId;
-                }
-
-                // Buat koneksi WebSocket ke server signaling
-                ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
-                ws.onopen = async () => {
-                    console.log('Terhubung ke server signaling');
-                    await createNewPeerConnection(true);
-
-                    // Tambahkan stream ke Firestore
-                    const streamsCollection = collection(db, `artifacts/${appId}/public/data/streams`);
-                    await setDoc(doc(streamsCollection, userId), {
-                        title: streamTitle,
-                        streamerId: userId,
-                        nickname: nickname,
-                        timestamp: serverTimestamp()
-                    });
-                    setLiveState(true);
-                    
-                    // Inisialisasi listener chat untuk host
-                    startChatListener(userId, chatBox, chatInput, sendChatButton, true);
-                };
-                
-                ws.onmessage = async (event) => {
-                    const message = JSON.parse(event.data);
-                    if (message.from === userId) return;
-
-                    if (message.type === 'answer') {
-                        const remoteDesc = new RTCSessionDescription(message.answer);
-                        await peerConnection.setRemoteDescription(remoteDesc);
-                    } else if (message.type === 'ice-candidate') {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
-                    }
-                };
-
-                ws.onclose = () => {
-                    console.log('Koneksi signaling terputus');
-                };
-                
-            } catch (error) {
-                console.error('Gagal memulai siaran:', error);
-                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                    showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
-                } else {
-                    showMessage('Gagal mengakses kamera atau mikrofon. Periksa apakah kamera sedang digunakan aplikasi lain.');
-                }
+            // Dapatkan akses ke kamera dan mikrofon
+            const stream = await getCameraStream();
+            if (!stream) {
+                 return; // Keluar jika gagal mendapatkan stream
             }
+
+            // Atur stream ke elemen video
+            localVideo.srcObject = stream;
+            localStream = stream;
+            
+            // Perbarui profil pengguna dengan nama panggilan
+            if (auth.currentUser) {
+                await updateProfile(auth.currentUser, { displayName: nickname });
+            }
+
+            // Cek ketersediaan kamera belakang
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            if (videoDevices.length > 1) {
+                flipCameraButton.classList.remove('hidden');
+                currentCameraId = videoDevices[0].deviceId;
+            }
+
+            // Buat koneksi WebSocket ke server signaling
+            ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
+            ws.onopen = async () => {
+                console.log('Terhubung ke server signaling');
+                await createNewPeerConnection(true);
+
+                // Tambahkan stream ke Firestore
+                const streamsCollection = collection(db, `artifacts/${appId}/public/data/streams`);
+                await setDoc(doc(streamsCollection, userId), {
+                    title: streamTitle,
+                    streamerId: userId,
+                    nickname: nickname,
+                    timestamp: serverTimestamp()
+                });
+                setLiveState(true);
+                
+                // Inisialisasi listener chat untuk host
+                startChatListener(userId, chatBox, chatInput, sendChatButton, true);
+            };
+            
+            ws.onmessage = async (event) => {
+                const message = JSON.parse(event.data);
+                if (message.from === userId) return;
+
+                if (message.type === 'answer') {
+                    const remoteDesc = new RTCSessionDescription(message.answer);
+                    await peerConnection.setRemoteDescription(remoteDesc);
+                } else if (message.type === 'ice-candidate') {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('Koneksi signaling terputus');
+            };
         }
         
         // --- Event Listeners ---
