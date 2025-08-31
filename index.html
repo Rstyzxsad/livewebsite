@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novascatia Live</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -151,7 +152,8 @@
 
         <div id="discoverSection" class="mt-8 w-full">
             <div id="liveStreamList" class="live-stream-list">
-                </div>
+                <!-- Live streams will be rendered here -->
+            </div>
             <div id="noLiveMessage" class="text-center text-gray-400 mt-8 hidden">
                 Tidak ada yang live untuk saat ini. Jadilah yang pertama!
             </div>
@@ -159,6 +161,7 @@
         
         <button id="plusButton" class="plus-button fixed bottom-8 right-8 text-4xl leading-none">+</button>
 
+        <!-- Modal Login dan Go Live -->
         <div id="loginModal" class="modal hidden">
             <div class="modal-content flex flex-col gap-4">
                 <h2 class="text-2xl font-bold text-center">Mulai Siaran Langsung</h2>
@@ -174,6 +177,7 @@
         </div>
     </div>
     
+    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -394,8 +398,7 @@
                 setLiveState(false);
                 showMessage("Siaran telah dihentikan.");
             } catch (e) {
-                console.error("Gagal menghentikan siaran:", e);
-                showMessage("Gagal menghentikan siaran.");
+error_message_placeholder
             }
         });
 
@@ -475,63 +478,3 @@
     </script>
 </body>
 </html>
-```eof
-
----
-
-### File 2: Backend Signaling Serverless (`api/signal.js`)
-
-File ini tetap sama, karena fungsinya hanya untuk menjadi jembatan sinyal antara streamer dan penonton.
-
-```markdown:Serverless API Signaling (Node.js):api/signal.js
-/*
-  Ini adalah server signaling sederhana untuk Vercel.
-  File ini harus ditempatkan di dalam direktori `api` di proyek Vercel Anda.
-  Ini akan menangani permintaan WebSocket untuk menghubungkan klien WebRTC.
-
-  CATATAN: Anda perlu menginstal library 'ws' untuk kode ini.
-  Jalankan perintah ini di terminal: npm install ws
-*/
-
-const { WebSocketServer } = require('ws');
-const url = require('url');
-
-let wss;
-const clients = new Map(); // Menggunakan Map untuk menyimpan klien berdasarkan ID
-
-module.exports = (req, res) => {
-  if (!wss) {
-    wss = new WebSocketServer({ noServer: true });
-
-    wss.on('connection', (ws, request) => {
-      const { query } = url.parse(request.url, true);
-      const clientId = query.id;
-      clients.set(clientId, ws);
-      console.log(`Klien baru terhubung: ${clientId}`);
-
-      ws.on('message', message => {
-        const data = JSON.parse(message);
-        const targetClient = clients.get(data.to);
-
-        if (targetClient && targetClient.readyState === 1) { // 1 = OPEN
-          console.log(`Meneruskan pesan dari ${data.from} ke ${data.to}`);
-          targetClient.send(JSON.stringify(data));
-        }
-      });
-
-      ws.on('close', () => {
-        console.log(`Klien terputus: ${clientId}`);
-        clients.delete(clientId);
-      });
-    });
-  }
-
-  if (req.headers.upgrade === 'websocket') {
-    wss.handleUpgrade(req, req.socket, Buffer.alloc(0), ws => {
-      wss.emit('connection', ws, req);
-    });
-  } else {
-    res.status(200).send('WebSocket server berjalan.');
-  }
-};
-```eof
