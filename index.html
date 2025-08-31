@@ -383,17 +383,11 @@
                      return stream;
                  } else {
                      console.error("Stream kosong atau tidak valid.");
-                     showMessage('Gagal mendapatkan stream video. Periksa izin kamera di browser Anda.');
-                     return null;
+                     throw new Error('Gagal mendapatkan stream video. Periksa izin kamera di browser Anda.');
                  }
             } catch (error) {
                 console.error("Kesalahan saat mengakses kamera/mikrofon:", error);
-                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-                    showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
-                } else {
-                    showMessage('Gagal mengakses kamera atau mikrofon. Periksa apakah kamera sedang digunakan aplikasi lain.');
-                }
-                return null;
+                throw error;
             }
         }
 
@@ -411,15 +405,26 @@
             showMessage("Sedang memuat live stream...");
             
             // Dapatkan akses ke kamera dan mikrofon
-            const stream = await getCameraStream();
-            if (!stream) {
+            try {
+                const stream = await getCameraStream();
+                localVideo.srcObject = stream;
+                localStream = stream;
+
+                // Coba putar video. Tangani jika gagal karena kebijakan autoplay.
+                localVideo.play().catch(e => {
+                    console.error("Gagal memutar video:", e);
+                    showMessage("Gagal memutar video. Coba muat ulang halaman.");
+                });
+                
+            } catch (error) {
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
+                } else {
+                    showMessage('Gagal mengakses kamera atau mikrofon. Periksa apakah kamera sedang digunakan aplikasi lain.');
+                }
                  return; // Keluar jika gagal mendapatkan stream
             }
 
-            // Atur stream ke elemen video
-            localVideo.srcObject = stream;
-            localStream = stream;
-            
             // Perbarui profil pengguna dengan nama panggilan
             if (auth.currentUser) {
                 await updateProfile(auth.currentUser, { displayName: nickname });
@@ -435,6 +440,7 @@
 
             // Buat koneksi WebSocket ke server signaling
             ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
+            
             ws.onopen = async () => {
                 console.log('Terhubung ke server signaling');
                 await createNewPeerConnection(true);
@@ -465,6 +471,13 @@
                     await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
                 }
             };
+            
+            ws.onerror = (e) => {
+                console.error('WebSocket Error:', e);
+                showMessage('Gagal terhubung ke server. Periksa koneksi internet Anda atau coba lagi nanti.');
+                setLiveState(false);
+                clearVideos();
+            };
 
             ws.onclose = () => {
                 console.log('Koneksi signaling terputus');
@@ -474,6 +487,7 @@
         // --- Event Listeners ---
         plusButton.addEventListener('click', () => {
             loginModal.classList.remove('hidden');
+            hideMessage();
         });
 
         cancelButton.addEventListener('click', () => {
@@ -603,6 +617,13 @@
                 } else if (message.type === 'ice-candidate') {
                     await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
                 }
+            };
+
+            ws.onerror = (e) => {
+                console.error('WebSocket Error:', e);
+                showMessage('Gagal terhubung ke server. Periksa koneksi internet Anda atau coba lagi nanti.');
+                setViewerState(false);
+                clearVideos();
             };
             
             // Inisialisasi listener chat untuk penonton
