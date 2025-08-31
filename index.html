@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novascatia Live</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -152,8 +151,7 @@
 
         <div id="discoverSection" class="mt-8 w-full">
             <div id="liveStreamList" class="live-stream-list">
-                <!-- Live streams will be rendered here -->
-            </div>
+                </div>
             <div id="noLiveMessage" class="text-center text-gray-400 mt-8 hidden">
                 Tidak ada yang live untuk saat ini. Jadilah yang pertama!
             </div>
@@ -161,7 +159,6 @@
         
         <button id="plusButton" class="plus-button fixed bottom-8 right-8 text-4xl leading-none">+</button>
 
-        <!-- Modal Login dan Go Live -->
         <div id="loginModal" class="modal hidden">
             <div class="modal-content flex flex-col gap-4">
                 <h2 class="text-2xl font-bold text-center">Mulai Siaran Langsung</h2>
@@ -177,7 +174,6 @@
         </div>
     </div>
     
-    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -305,17 +301,8 @@
                 }));
             }
         }
-        
-        // --- Event Listeners ---
-        plusButton.addEventListener('click', () => {
-            loginModal.classList.remove('hidden');
-        });
 
-        cancelButton.addEventListener('click', () => {
-            loginModal.classList.add('hidden');
-        });
-
-        startLiveButton.addEventListener('click', async () => {
+        async function startLiveSession() {
             const nickname = nicknameInput.value.trim();
             const streamTitle = streamTitleInput.value.trim();
             
@@ -325,6 +312,11 @@
             }
             
             try {
+                // Mendapatkan akses ke kamera dan mikrofon
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localVideo.srcObject = stream;
+                localStream = stream;
+
                 // Update profile pengguna dengan nama panggilan
                 if (auth.currentUser) {
                     await updateProfile(auth.currentUser, { displayName: nickname });
@@ -333,17 +325,10 @@
                 // Sembunyikan modal
                 loginModal.classList.add('hidden');
                 
-                // Mendapatkan akses ke kamera dan mikrofon
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localVideo.srcObject = stream;
-                localStream = stream;
-
                 // Buat koneksi WebSocket ke server signaling
                 ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
                 ws.onopen = async () => {
                     console.log('Terhubung ke server signaling');
-                    
-                    // Buat peer connection
                     await createNewPeerConnection(true);
 
                     // Tambahkan stream ke Firestore
@@ -375,9 +360,24 @@
                 
             } catch (error) {
                 console.error('Gagal memulai siaran:', error);
-                showMessage('Gagal mengakses kamera atau mikrofon. Pastikan Anda memberikan izin.');
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
+                } else {
+                    showMessage('Gagal mengakses kamera atau mikrofon.');
+                }
             }
+        }
+        
+        // --- Event Listeners ---
+        plusButton.addEventListener('click', () => {
+            loginModal.classList.remove('hidden');
         });
+
+        cancelButton.addEventListener('click', () => {
+            loginModal.classList.add('hidden');
+        });
+
+        startLiveButton.addEventListener('click', startLiveSession);
 
         document.getElementById('stopLiveButton').addEventListener('click', async () => {
             try {
