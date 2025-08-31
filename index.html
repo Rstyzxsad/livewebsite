@@ -1,320 +1,537 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>nov4scatia.</title>
-<style>
-  body {
-    margin:0;
-    font-family:'Segoe UI', sans-serif;
-    background:#111;
-    color:#fff;
-    overflow-x:hidden;
-  }
-
-  /* Header */
-  .header {
-    text-align:center;
-    margin-top:30px;
-    padding:15px;
-    background: rgba(255,255,255,0.05);
-    border-radius:10px;
-    max-width:90%;
-    margin-left:auto;
-    margin-right:auto;
-  }
-  .header h1 { font-size:2rem; margin:0; color:#fff; }
-  .header a { display:block; margin-top:5px; color:#e74c3c; font-size:1rem; text-decoration:none; }
-  .header a:hover { color:#f39c12; }
-
-  /* Gallery Section */
-  .gallery-section { margin:15px auto; max-width:90%; }
-  .gallery-title { font-size:1rem; margin-bottom:5px; color:#ccc; }
-  .gallery-container {
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-    padding:5px 0;
-    z-index:20;
-    position:relative;
-  }
-  .gallery-container::-webkit-scrollbar {display:none;}
-  .gallery-item {
-    flex:0 0 auto;
-    border-radius:5px;
-    overflow:hidden;
-    width:50px;
-    height:50px;
-    cursor:pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    z-index:20;
-    position:relative;
-  }
-  .gallery-item img {
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:cover;
-    user-select:none;
-    user-drag:none;
-  }
-  .gallery-item:hover{
-    transform: scale(1.1);
-    box-shadow:0 0 5px rgba(255,255,255,0.3);
-  }
-
-  /* Modal / Lightbox */
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:100; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:10px; }
-  .modal img { max-width:90%; max-height:70%; border-radius:10px; margin-bottom:10px; }
-  .modal-desc { color:#fff; font-size:1rem; margin-top:5px; }
-  .modal-close { position:absolute; top:20px; right:20px; font-size:2rem; color:#fff; cursor:pointer; }
-
-  /* Donasi Link */
-  .donasi { text-align:center; margin-top:10px; z-index:20; position:relative; }
-  .donasi a { color:#e74c3c; text-decoration:none; font-size:1rem; }
-  .donasi a:hover { color:#f39c12; }
-
-  /* Donasi1 Link */
-  .donasi1 { text-align:center; margin-top:10px; z-index:20; position:relative; }
-  .donasi1 a { color:#e74c3c; text-decoration:none; font-size:1rem; }
-  .donasi1 a:hover { color:#f39c12; }
-
-  /* Panel Artikel */
-  .menu-btn {
-    position: fixed; top:10px; left:10px;
-    width:35px; height:35px;
-    background: rgba(255,255,255,0.2);
-    border:none; border-radius:5px;
-    font-size:1.5rem; color:#fff; cursor:pointer;
-    z-index:60; display:flex; justify-content:center; align-items:center;
-  }
-  .menu-hint {
-    position: fixed; top:50px; left:10px;
-    background: rgba(0,0,0,0.6);
-    padding:5px 8px;
-    border-radius:5px;
-    font-size:0.85rem;
-    color:#fff;
-    z-index:55;
-  }
-
-  .panel {
-    position: fixed;
-    top:0;
-    left:-100%;
-    width:80%; 
-    max-width:260px; 
-    height:100%;
-    background: rgba(0,0,0,0.95);
-    color:#fff; z-index:50;
-    padding:15px;
-    transition:left 0.3s ease;
-    overflow-y:auto;
-    border-radius:0 10px 10px 0;
-  }
-  .panel.open{left:0;}
-  .overlay {
-    position: fixed; top:0; left:0; width:100%; height:100%;
-    background: rgba(0,0,0,0.4);
-    z-index:49; display:none;
-  }
-  .overlay.show{display:block;}
-  .close-btn {
-    position:absolute; top:10px; right:10px; font-size:1.5rem; cursor:pointer; display:none;
-  }
-
-  /* Running text */
-  .running-text-container {
-    position: fixed;
-    bottom:10px;
-    right:0;
-    max-width:100%;
-    padding:5px 10px;
-    background: rgba(0,0,0,0.7);
-    border-radius:5px 0 0 5px;
-    z-index:90;
-    overflow:hidden;
-  }
-  .running-text {
-    white-space: nowrap;
-    color:#fff;
-    font-size:0.9rem;
-    font-weight:500;
-  }
-
-  @media(max-width:600px){
-    .header h1{font-size:1.5rem;}
-    .header a{font-size:0.9rem;}
-    .gallery-title{font-size:0.85rem;}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novascatia Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+            align-items: center;
+        }
+        .container {
+            background-color: #1e293b;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 95%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: none;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .btn-green {
+            background-color: #22c55e;
+            color: #fff;
+        }
+        .btn-red {
+            background-color: #ef4444;
+            color: #fff;
+        }
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            background-color: #0f172a;
+            border-radius: 1rem;
+            padding: 0.5rem;
+        }
+        .video-wrapper {
+            position: relative;
+            background-color: #000;
+            border-radius: 1rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+        .live-stream-list {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+        .stream-card {
+            background-color: #334155;
+            border-radius: 1rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stream-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background-color: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+        }
+        .plus-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background-color: #22c55e;
+            color: white;
+            font-size: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+        }
+        #messageBox {
+            background-color: #475569;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: none;
+            text-align: center;
+        }
+        #messageBox.active {
+            display: block;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
 
-<!-- Header -->
-<div class="header">
-  <h1>ACAB.</h1>
-  <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank">- Rest in Power, Affan. -</a>
-  <a href="https://youtu.be/JWZ4W34MrzQ?si=09bpRnbyHUhhowmC" target="_blank"></a>Stay Safe !
-</div>
+    <div class="container">
+        <h1 class="text-4xl font-extrabold text-center mb-2">Novascatia Live</h1>
+        <p class="text-center text-gray-400 mb-4">Temukan Live Stream</p>
+        
+        <div id="videoSection" class="video-container hidden">
+            <div class="video-wrapper">
+                <video id="localVideo" autoplay playsinline muted></video>
+                <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg">Video Saya</div>
+            </div>
+            <div class="video-wrapper">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg">Penonton</div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-4">
+                <button id="stopLiveButton" class="btn btn-red w-full md:w-auto" disabled>Hentikan Siaran</button>
+            </div>
+        </div>
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a> Donasi :
+        <div id="discoverSection" class="mt-8 w-full">
+            <div id="liveStreamList" class="live-stream-list">
+                </div>
+            <div id="noLiveMessage" class="text-center text-gray-400 mt-8 hidden">
+                Tidak ada yang live untuk saat ini. Jadilah yang pertama!
+            </div>
+        </div>
+        
+        <button id="plusButton" class="plus-button fixed bottom-8 right-8 text-4xl leading-none">+</button>
 
-<!-- Donasi -->
-<div class="donasi">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank">Donasi? - LBH Jakarta</a> (OPEN) <<
-</div>
+        <div id="loginModal" class="modal hidden">
+            <div class="modal-content flex flex-col gap-4">
+                <h2 class="text-2xl font-bold text-center">Mulai Siaran Langsung</h2>
+                <input type="text" id="nicknameInput" placeholder="Nama Panggilan Anda" class="w-full px-4 py-2 rounded-full bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                <input type="text" id="streamTitleInput" placeholder="Judul Siaran Anda" class="w-full px-4 py-2 rounded-full bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                <button id="startLiveButton" class="btn btn-green w-full">Mulai Siaran</button>
+                <button id="cancelButton" class="btn btn-red w-full">Batal</button>
+            </div>
+        </div>
+        
+        <div id="messageBox" class="mt-4">
+            <p id="messageText"></p>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Konstanta Firebase disediakan secara otomatis oleh lingkungan Canvas
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-<!-- Donasi -->
-<div class="donasi">
-  <a href="https://x.com/humaniesproject/status/1961134669963116622" target="_blank">Donasi? - Humanies</a> (CLOSED) <<
-</div>
+        let db;
+        let auth;
+        let userId;
 
-<!-- Donasi -->
-<div class="donasi">
-  <a href= "https://x.com/hijaubersamaid/status/1961128546170277923" target="_blank">Donasi? - Hijau Bersama Indonesia</a> (CLOSED) <<
-</div>
+        // Inisialisasi Firebase dan Autentikasi
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log('Pengguna terautentikasi:', userId);
+                    startDiscovery();
+                } else {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Gagal menginisialisasi Firebase:", e);
+        }
 
+        // --- Variabel & Elemen DOM ---
+        const plusButton = document.getElementById('plusButton');
+        const loginModal = document.getElementById('loginModal');
+        const nicknameInput = document.getElementById('nicknameInput');
+        const streamTitleInput = document.getElementById('streamTitleInput');
+        const startLiveButton = document.getElementById('startLiveButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const videoSection = document.getElementById('videoSection');
+        const liveStreamList = document.getElementById('liveStreamList');
+        const noLiveMessage = document.getElementById('noLiveMessage');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>Last Update at 09:06 - 29/08/2025
+        let localStream;
+        let peerConnection;
+        let ws; // WebSocket
+        let isStreaming = false;
+        let activeStreamId = null;
 
-<!-- Donasi -->
-<div class="donasi2">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>All fundraising will redirect you to Twitter (X).<!-- Donasi -->
-<div class="donasi2">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>Please double-check before donating.
+        // Konfigurasi WebRTC
+        const configuration = {
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        };
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"> ‎ ‎ ‎ </a>
+        // Fungsi utilitas
+        function showMessage(text) {
+            messageText.innerText = text;
+            messageBox.classList.add('active');
+        }
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"> ‎ ‎ ‎ </a>
+        function hideMessage() {
+            messageBox.classList.remove('active');
+        }
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a> Posko Medis / Ambulance :
+        function setLiveState(live) {
+            isStreaming = live;
+            videoSection.classList.toggle('hidden', !live);
+            
+            if (live) {
+                showMessage(`Anda sedang siaran langsung sebagai "${streamTitleInput.value}".`);
+            }
+        }
+        
+        function clearVideos() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+                localVideo.srcObject = null;
+            }
+            if (remoteVideo.srcObject) {
+                remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+                remoteVideo.srcObject = null;
+            }
+        }
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a> No Data.
+        async function createNewPeerConnection(isCaller) {
+            peerConnection = new RTCPeerConnection(configuration);
 
-<!-- Donasi -->
-<div class="donasi1">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>Last Update at 09:06 - 29/08/2025
+            if (localStream) {
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            }
 
-<!-- Donasi -->
-<div class="donasi2">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>Clicking link will redirect you Twitter (X).<!-- Donasi -->
-<div class="donasi2">
-  <a href="https://x.com/LBH_Jakarta/status/1960995991919776228" target="_blank"></a>Stay Safe.
-</div>
+            peerConnection.ontrack = (event) => {
+                remoteVideo.srcObject = event.streams[0];
+            };
 
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    ws.send(JSON.stringify({
+                        type: 'ice-candidate',
+                        candidate: event.candidate,
+                        from: userId,
+                        to: activeStreamId
+                    }));
+                }
+            };
+            
+            if (isCaller) {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                ws.send(JSON.stringify({
+                    type: 'offer',
+                    offer: offer,
+                    from: userId,
+                    to: activeStreamId
+                }));
+            }
+        }
+        
+        // --- Event Listeners ---
+        plusButton.addEventListener('click', () => {
+            loginModal.classList.remove('hidden');
+        });
 
-<div class="panel" id="panel">
-  <span class="close-btn" id="closeBtn">✖</span>
-  <h2>Artikel</h2>
-  <ul>
-    <li><a href="https://news.detik.com/berita/d-8084857/affan-kurniawan-dikenal-sosok-rajin-dan-tulang-punggung-keluarga" target="_blank">[DETIK] Affan Kurniawan Dikenal Sosok Rajin dan Tulang Punggung Keluarga/</a></li>
-    <li><a href="https://nasional.kompas.com/read/2025/08/29/07154571/hendropriyono-klaim-tahu-dalang-demo-di-dpr-orang-luar-dan-punya-kaki-tangan" target="_blank">[KOMPAS] Hendropriyono Klaim Tahu Dalang Demo di DPR, Orang Luar dan Punya Kaki Tangan di RI</a></li>
-  </ul>
-</div>
-<div class="overlay" id="overlay"></div>
+        cancelButton.addEventListener('click', () => {
+            loginModal.classList.add('hidden');
+        });
 
-<!-- Modal Lightbox -->
-<div class="modal" id="modal">
-  <span class="modal-close" id="modalClose">✖</span>
-  <img id="modalImg" src="" alt="">
-  <div class="modal-desc" id="modalDesc"></div>
-</div>
+        startLiveButton.addEventListener('click', async () => {
+            const nickname = nicknameInput.value.trim();
+            const streamTitle = streamTitleInput.value.trim();
+            
+            if (!nickname || !streamTitle) {
+                showMessage("Nama panggilan dan judul siaran tidak boleh kosong!");
+                return;
+            }
+            
+            try {
+                // Update profile pengguna dengan nama panggilan
+                if (auth.currentUser) {
+                    await updateProfile(auth.currentUser, { displayName: nickname });
+                }
 
-<!-- Audio -->
-<audio id="audioPlayer" src="song.mp3" loop></audio>
+                // Sembunyikan modal
+                loginModal.classList.add('hidden');
+                
+                // Mendapatkan akses ke kamera dan mikrofon
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                localVideo.srcObject = stream;
+                localStream = stream;
 
-<!-- Running text -->
-<div class="running-text-container">
-  <div class="running-text" id="runningText"></div>
-</div>
+                // Buat koneksi WebSocket ke server signaling
+                ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
+                ws.onopen = async () => {
+                    console.log('Terhubung ke server signaling');
+                    
+                    // Buat peer connection
+                    await createNewPeerConnection(true);
 
-<script>
-  const menuBtn = document.getElementById('menuBtn');
-  const panel = document.getElementById('panel');
-  const overlay = document.getElementById('overlay');
-  const closeBtn = document.getElementById('closeBtn');
-  const menuHint = document.getElementById('menuHint');
-  let hintClicked=false;
+                    // Tambahkan stream ke Firestore
+                    const streamsCollection = collection(db, `artifacts/${appId}/public/data/streams`);
+                    await setDoc(doc(streamsCollection, userId), {
+                        title: streamTitle,
+                        streamerId: userId,
+                        nickname: nickname,
+                        timestamp: Date.now()
+                    });
+                    setLiveState(true);
+                };
+                
+                ws.onmessage = async (event) => {
+                    const message = JSON.parse(event.data);
+                    if (message.from === userId) return;
 
-  // Panel Artikel
-  menuBtn.addEventListener('click', ()=>{
-    panel.classList.add('open');
-    overlay.classList.add('show');
-    closeBtn.style.display='block';
-    menuBtn.style.display='none';
-    if(!hintClicked){ menuHint.style.display='none'; hintClicked=true; }
-  });
-  closeBtn.addEventListener('click', ()=>{
-    panel.classList.remove('open');
-    overlay.classList.remove('show');
-    closeBtn.style.display='none';
-    menuBtn.style.display='block';
-  });
-  overlay.addEventListener('click', ()=>{
-    panel.classList.remove('open');
-    overlay.classList.remove('show');
-    closeBtn.style.display='none';
-    menuBtn.style.display='block';
-  });
+                    if (message.type === 'answer') {
+                        const remoteDesc = new RTCSessionDescription(message.answer);
+                        await peerConnection.setRemoteDescription(remoteDesc);
+                    } else if (message.type === 'ice-candidate') {
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+                    }
+                };
 
-  // Modal Lightbox
-  const modal = document.getElementById('modal');
-  const modalImg = document.getElementById('modalImg');
-  const modalDesc = document.getElementById('modalDesc');
-  const modalClose = document.getElementById('modalClose');
-  const galleryItems = document.querySelectorAll('.gallery-item');
-  galleryItems.forEach(item=>{
-    item.addEventListener('click', ()=>{
-      modal.style.display='flex';
-      modalImg.src = item.querySelector('img').src;
-      modalDesc.textContent = item.dataset.desc;
-    });
-  });
-  modalClose.addEventListener('click', ()=>{ modal.style.display='none'; });
+                ws.onclose = () => {
+                    console.log('Koneksi signaling terputus');
+                };
+                
+            } catch (error) {
+                console.error('Gagal memulai siaran:', error);
+                showMessage('Gagal mengakses kamera atau mikrofon. Pastikan Anda memberikan izin.');
+            }
+        });
 
-  // Audio autoplay + set volume 25%
-  const audio = document.getElementById('audioPlayer');
-  audio.volume = 0.25;
-  audio.play().catch(()=>{ console.log('autoplay blocked'); });
+        document.getElementById('stopLiveButton').addEventListener('click', async () => {
+            try {
+                if (peerConnection) {
+                    peerConnection.close();
+                    peerConnection = null;
+                }
+                if (ws) {
+                    ws.close();
+                    ws = null;
+                }
+                clearVideos();
 
-  // Running text sequential
-  const runningTextArr = [
-    "ACAB!! - 1312",
-    "Rest in Power Joshua, Afif, Gamma, Affan.",
-    "#RESETINDONESIA",
-    "nov4 <"
-  ];
-  const runningTextDiv = document.getElementById('runningText');
-  let rtIndex = 0;
-  function showRunningText(){
-    if(rtIndex >= runningTextArr.length) return;
-    runningTextDiv.textContent = runningTextArr[rtIndex];
-    runningTextDiv.style.opacity = 1;
-    setTimeout(()=>{
-      runningTextDiv.style.transition='opacity 1s';
-      runningTextDiv.style.opacity=0;
-      setTimeout(()=>{
-        runningTextDiv.style.transition='none';
-        rtIndex++;
-        showRunningText();
-      },1000);
-    },3000);
-  }
-  showRunningText();
-</script>
+                // Hapus entri dari Firestore
+                if (userId) {
+                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/streams/${userId}`));
+                }
+                setLiveState(false);
+                showMessage("Siaran telah dihentikan.");
+            } catch (e) {
+                console.error("Gagal menghentikan siaran:", e);
+                showMessage("Gagal menghentikan siaran.");
+            }
+        });
+
+        // --- Fungsi Penemuan (Discovery) ---
+        function startDiscovery() {
+            const streamsCollection = collection(db, `artifacts/${appId}/public/data/streams`);
+            onSnapshot(query(streamsCollection), (snapshot) => {
+                liveStreamList.innerHTML = '';
+                if (snapshot.empty) {
+                    noLiveMessage.classList.remove('hidden');
+                } else {
+                    noLiveMessage.classList.add('hidden');
+                    snapshot.forEach(doc => {
+                        const streamData = doc.data();
+                        const streamId = doc.id;
+                        if (streamId === userId) return; // Jangan tampilkan stream kita sendiri
+
+                        const card = document.createElement('div');
+                        card.className = 'stream-card';
+                        card.innerHTML = `
+                            <p class="font-bold text-lg truncate">${streamData.title}</p>
+                            <p class="text-sm text-gray-400">Streamer: ${streamData.nickname}</p>
+                            <button class="w-full mt-2 px-3 py-1 bg-green-500 rounded-full text-white font-semibold hover:bg-green-600 transition-colors">Tonton</button>
+                        `;
+                        card.querySelector('button').addEventListener('click', () => watchStream(streamId));
+                        liveStreamList.appendChild(card);
+                    });
+                }
+            });
+        }
+        
+        async function watchStream(streamerId) {
+            if (isStreaming) {
+                showMessage("Anda harus menghentikan siaran Anda sendiri terlebih dahulu.");
+                return;
+            }
+            
+            // Sembunyikan daftar stream
+            document.getElementById('discoverSection').classList.add('hidden');
+            videoSection.classList.remove('hidden');
+
+            activeStreamId = streamerId;
+            
+            // Buat koneksi WebSocket ke server signaling
+            ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}&target=${streamerId}`);
+
+            ws.onopen = async () => {
+                console.log('Terhubung ke server signaling sebagai penonton.');
+                await createNewPeerConnection(false); // Penonton bukan yang pertama (caller)
+
+                // Kirim pesan untuk meminta offer dari streamer
+                ws.send(JSON.stringify({
+                    type: 'request-offer',
+                    from: userId,
+                    to: streamerId
+                }));
+            };
+            
+            ws.onmessage = async (event) => {
+                const message = JSON.parse(event.data);
+                
+                if (message.type === 'offer') {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(message.offer));
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+                    ws.send(JSON.stringify({
+                        type: 'answer',
+                        answer: answer,
+                        from: userId,
+                        to: streamerId
+                    }));
+                } else if (message.type === 'ice-candidate') {
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
+                }
+            };
+        }
+    </script>
 </body>
 </html>
+```eof
+
+---
+
+### File 2: Backend Signaling Serverless (`api/signal.js`)
+
+File ini tetap sama, karena fungsinya hanya untuk menjadi jembatan sinyal antara streamer dan penonton.
+
+```markdown:Serverless API Signaling (Node.js):api/signal.js
+/*
+  Ini adalah server signaling sederhana untuk Vercel.
+  File ini harus ditempatkan di dalam direktori `api` di proyek Vercel Anda.
+  Ini akan menangani permintaan WebSocket untuk menghubungkan klien WebRTC.
+
+  CATATAN: Anda perlu menginstal library 'ws' untuk kode ini.
+  Jalankan perintah ini di terminal: npm install ws
+*/
+
+const { WebSocketServer } = require('ws');
+const url = require('url');
+
+let wss;
+const clients = new Map(); // Menggunakan Map untuk menyimpan klien berdasarkan ID
+
+module.exports = (req, res) => {
+  if (!wss) {
+    wss = new WebSocketServer({ noServer: true });
+
+    wss.on('connection', (ws, request) => {
+      const { query } = url.parse(request.url, true);
+      const clientId = query.id;
+      clients.set(clientId, ws);
+      console.log(`Klien baru terhubung: ${clientId}`);
+
+      ws.on('message', message => {
+        const data = JSON.parse(message);
+        const targetClient = clients.get(data.to);
+
+        if (targetClient && targetClient.readyState === 1) { // 1 = OPEN
+          console.log(`Meneruskan pesan dari ${data.from} ke ${data.to}`);
+          targetClient.send(JSON.stringify(data));
+        }
+      });
+
+      ws.on('close', () => {
+        console.log(`Klien terputus: ${clientId}`);
+        clients.delete(clientId);
+      });
+    });
+  }
+
+  if (req.headers.upgrade === 'websocket') {
+    wss.handleUpgrade(req, req.socket, Buffer.alloc(0), ws => {
+      wss.emit('connection', ws, req);
+    });
+  } else {
+    res.status(200).send('WebSocket server berjalan.');
+  }
+};
+```eof

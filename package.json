@@ -1,0 +1,12 @@
+    {
+      "name": "novascatia-live-streaming",
+      "version": "1.0.0",
+      "description": "A live streaming application hosted on Vercel.",
+      "main": "index.html",
+      "scripts": {
+        "start": "npx serve"
+      },
+      "dependencies": {
+        "ws": "^8.16.0"
+      }
+    }
