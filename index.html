@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novascatia Live</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -127,6 +128,12 @@
         #messageBox.active {
             display: block;
         }
+        #chatBox {
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Pesan terbaru di bawah */
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
@@ -135,23 +142,54 @@
         <h1 class="text-4xl font-extrabold text-center mb-2">Novascatia Live</h1>
         <p class="text-center text-gray-400 mb-4">Temukan Live Stream</p>
         
-        <div id="videoSection" class="video-container hidden">
+        <!-- Tampilan untuk Host -->
+        <div id="hostSection" class="w-full hidden">
             <div class="video-wrapper">
-                <video id="localVideo" autoplay playsinline muted></video>
+                <video id="localVideo" autoplay playsinline muted class="w-full"></video>
                 <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg">Video Saya</div>
             </div>
-            <div class="video-wrapper">
-                <video id="remoteVideo" autoplay playsinline></video>
-                <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg">Penonton</div>
-            </div>
             <div class="flex flex-col md:flex-row justify-center items-center gap-4 mt-4">
-                <button id="stopLiveButton" class="btn btn-red w-full md:w-auto" disabled>Hentikan Siaran</button>
+                <button id="stopLiveButton" class="btn btn-red w-full md:w-auto">Hentikan Siaran</button>
+                <button id="flipCameraButton" class="btn btn-green w-full md:w-auto hidden">Balik Kamera</button>
+            </div>
+            
+            <!-- Kotak Komentar -->
+            <div class="mt-6 flex flex-col gap-2">
+                <h3 class="text-2xl font-semibold">Komentar</h3>
+                <div id="chatBox" class="bg-slate-800 rounded-lg p-3 flex-grow overflow-y-auto">
+                    <!-- Komentar akan muncul di sini -->
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" id="chatInput" placeholder="Ketik komentar..." class="w-full px-4 py-2 rounded-full bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <button id="sendChatButton" class="btn btn-green">Kirim</button>
+                </div>
             </div>
         </div>
 
+        <!-- Tampilan untuk Penonton -->
+        <div id="viewerSection" class="w-full hidden">
+            <div class="video-wrapper">
+                <video id="remoteVideo" autoplay playsinline class="w-full"></video>
+                <div class="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-lg">Live Stream</div>
+            </div>
+             <!-- Kotak Komentar -->
+            <div class="mt-6 flex flex-col gap-2">
+                <h3 class="text-2xl font-semibold">Komentar</h3>
+                <div id="chatBoxViewer" class="bg-slate-800 rounded-lg p-3 flex-grow overflow-y-auto">
+                    <!-- Komentar akan muncul di sini -->
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" id="chatInputViewer" placeholder="Ketik komentar..." class="w-full px-4 py-2 rounded-full bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <button id="sendChatButtonViewer" class="btn btn-green">Kirim</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tampilan untuk Penemuan Stream -->
         <div id="discoverSection" class="mt-8 w-full">
             <div id="liveStreamList" class="live-stream-list">
-                </div>
+                <!-- Live streams will be rendered here -->
+            </div>
             <div id="noLiveMessage" class="text-center text-gray-400 mt-8 hidden">
                 Tidak ada yang live untuk saat ini. Jadilah yang pertama!
             </div>
@@ -159,6 +197,7 @@
         
         <button id="plusButton" class="plus-button fixed bottom-8 right-8 text-4xl leading-none">+</button>
 
+        <!-- Modal Login dan Go Live -->
         <div id="loginModal" class="modal hidden">
             <div class="modal-content flex flex-col gap-4">
                 <h2 class="text-2xl font-bold text-center">Mulai Siaran Langsung</h2>
@@ -174,10 +213,11 @@
         </div>
     </div>
     
+    <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection, query, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // Konstanta Firebase disediakan secara otomatis oleh lingkungan Canvas
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -220,17 +260,27 @@
         const cancelButton = document.getElementById('cancelButton');
         const localVideo = document.getElementById('localVideo');
         const remoteVideo = document.getElementById('remoteVideo');
-        const videoSection = document.getElementById('videoSection');
+        const hostSection = document.getElementById('hostSection');
+        const viewerSection = document.getElementById('viewerSection');
+        const discoverSection = document.getElementById('discoverSection');
         const liveStreamList = document.getElementById('liveStreamList');
         const noLiveMessage = document.getElementById('noLiveMessage');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatButton = document.getElementById('sendChatButton');
+        const chatBoxViewer = document.getElementById('chatBoxViewer');
+        const chatInputViewer = document.getElementById('chatInputViewer');
+        const sendChatButtonViewer = document.getElementById('sendChatButtonViewer');
+        const flipCameraButton = document.getElementById('flipCameraButton');
 
         let localStream;
         let peerConnection;
         let ws; // WebSocket
         let isStreaming = false;
         let activeStreamId = null;
+        let currentCameraId;
 
         // Konfigurasi WebRTC
         const configuration = {
@@ -249,10 +299,29 @@
 
         function setLiveState(live) {
             isStreaming = live;
-            videoSection.classList.toggle('hidden', !live);
-            
             if (live) {
+                // Tampilkan UI host, sembunyikan UI lainnya
+                hostSection.classList.remove('hidden');
+                discoverSection.classList.add('hidden');
+                viewerSection.classList.add('hidden');
                 showMessage(`Anda sedang siaran langsung sebagai "${streamTitleInput.value}".`);
+            } else {
+                // Kembali ke tampilan penemuan
+                hostSection.classList.add('hidden');
+                viewerSection.classList.add('hidden');
+                discoverSection.classList.remove('hidden');
+            }
+        }
+        
+        function setViewerState(watching) {
+            if (watching) {
+                viewerSection.classList.remove('hidden');
+                hostSection.classList.add('hidden');
+                discoverSection.classList.add('hidden');
+            } else {
+                viewerSection.classList.add('hidden');
+                hostSection.classList.add('hidden');
+                discoverSection.classList.remove('hidden');
             }
         }
         
@@ -302,6 +371,16 @@
             }
         }
 
+        async function getCameraStream(deviceId = null) {
+            const constraints = {
+                video: {
+                    deviceId: deviceId ? { exact: deviceId } : undefined
+                },
+                audio: true
+            };
+            return await navigator.mediaDevices.getUserMedia(constraints);
+        }
+
         async function startLiveSession() {
             const nickname = nicknameInput.value.trim();
             const streamTitle = streamTitleInput.value.trim();
@@ -310,21 +389,29 @@
                 showMessage("Nama panggilan dan judul siaran tidak boleh kosong!");
                 return;
             }
+
+            // Sembunyikan modal login
+            loginModal.classList.add('hidden');
             
             try {
                 // Mendapatkan akses ke kamera dan mikrofon
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const stream = await getCameraStream();
                 localVideo.srcObject = stream;
                 localStream = stream;
 
-                // Update profile pengguna dengan nama panggilan
+                // Perbarui profil pengguna dengan nama panggilan
                 if (auth.currentUser) {
                     await updateProfile(auth.currentUser, { displayName: nickname });
                 }
 
-                // Sembunyikan modal
-                loginModal.classList.add('hidden');
-                
+                // Cek ketersediaan kamera belakang
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                if (videoDevices.length > 1) {
+                    flipCameraButton.classList.remove('hidden');
+                    currentCameraId = videoDevices[0].deviceId;
+                }
+
                 // Buat koneksi WebSocket ke server signaling
                 ws = new WebSocket(`wss://${window.location.host}/api/signal?id=${userId}`);
                 ws.onopen = async () => {
@@ -337,9 +424,12 @@
                         title: streamTitle,
                         streamerId: userId,
                         nickname: nickname,
-                        timestamp: Date.now()
+                        timestamp: serverTimestamp()
                     });
                     setLiveState(true);
+                    
+                    // Inisialisasi listener chat untuk host
+                    startChatListener(userId, chatBox, true);
                 };
                 
                 ws.onmessage = async (event) => {
@@ -363,7 +453,7 @@
                 if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
                     showMessage('Akses ke kamera/mikrofon ditolak. Mohon izinkan akses di pengaturan browser Anda.');
                 } else {
-                    showMessage('Gagal mengakses kamera atau mikrofon.');
+                    showMessage('Gagal mengakses kamera atau mikrofon. Periksa apakah kamera sedang digunakan aplikasi lain.');
                 }
             }
         }
@@ -403,6 +493,34 @@
             }
         });
 
+        // Event listener untuk tombol balik kamera
+        flipCameraButton.addEventListener('click', async () => {
+            if (!localStream) return;
+            
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            
+            if (videoDevices.length > 1) {
+                const nextCamera = videoDevices.find(device => device.deviceId !== currentCameraId);
+                if (nextCamera) {
+                    currentCameraId = nextCamera.deviceId;
+                    localStream.getTracks().forEach(track => track.stop());
+                    
+                    const newStream = await getCameraStream(currentCameraId);
+                    localVideo.srcObject = newStream;
+                    localStream = newStream;
+                    
+                    if (peerConnection) {
+                        const videoTrack = newStream.getVideoTracks()[0];
+                        const sender = peerConnection.getSenders().find(s => s.track.kind === 'video');
+                        if (sender) {
+                            sender.replaceTrack(videoTrack);
+                        }
+                    }
+                }
+            }
+        });
+        
         // --- Fungsi Penemuan (Discovery) ---
         function startDiscovery() {
             const streamsCollection = collection(db, `artifacts/${appId}/public/data/streams`);
@@ -431,16 +549,14 @@
             });
         }
         
+        // --- Fungsi Menonton Stream ---
         async function watchStream(streamerId) {
             if (isStreaming) {
                 showMessage("Anda harus menghentikan siaran Anda sendiri terlebih dahulu.");
                 return;
             }
             
-            // Sembunyikan daftar stream
-            document.getElementById('discoverSection').classList.add('hidden');
-            videoSection.classList.remove('hidden');
-
+            setViewerState(true);
             activeStreamId = streamerId;
             
             // Buat koneksi WebSocket ke server signaling
@@ -448,9 +564,8 @@
 
             ws.onopen = async () => {
                 console.log('Terhubung ke server signaling sebagai penonton.');
-                await createNewPeerConnection(false); // Penonton bukan yang pertama (caller)
+                await createNewPeerConnection(false);
 
-                // Kirim pesan untuk meminta offer dari streamer
                 ws.send(JSON.stringify({
                     type: 'request-offer',
                     from: userId,
@@ -475,6 +590,59 @@
                     await peerConnection.addIceCandidate(new RTCIceCandidate(message.candidate));
                 }
             };
+            
+            // Inisialisasi listener chat untuk penonton
+            startChatListener(streamerId, chatBoxViewer, false);
+        }
+
+        // --- Fungsi Chat Firestore ---
+        function startChatListener(streamId, chatElement, isHost) {
+            const chatCollection = collection(db, `artifacts/${appId}/public/data/chat/${streamId}/messages`);
+            onSnapshot(query(chatCollection), (snapshot) => {
+                const messages = [];
+                snapshot.forEach(doc => {
+                    messages.push(doc.data());
+                });
+
+                // Sort messages by timestamp
+                messages.sort((a, b) => a.timestamp - b.timestamp);
+
+                chatElement.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageBubble = document.createElement('div');
+                    messageBubble.className = 'p-2 rounded-lg my-1';
+                    if (msg.senderId === userId) {
+                        messageBubble.classList.add('bg-blue-600', 'self-end', 'text-right');
+                        messageBubble.innerHTML = `<p>${msg.message}</p>`;
+                    } else {
+                        messageBubble.classList.add('bg-gray-700', 'self-start', 'text-left');
+                        messageBubble.innerHTML = `<p class="font-bold text-sm">${msg.senderNickname}</p><p>${msg.message}</p>`;
+                    }
+                    chatElement.prepend(messageBubble); // Add to the top
+                });
+            });
+
+            const chatInputToUse = isHost ? chatInput : chatInputViewer;
+            const sendButtonToUse = isHost ? sendChatButton : sendChatButtonViewer;
+            
+            sendButtonToUse.addEventListener('click', async () => {
+                const message = chatInputToUse.value.trim();
+                if (message) {
+                    await addDoc(collection(db, `artifacts/${appId}/public/data/chat/${streamId}/messages`), {
+                        senderId: userId,
+                        senderNickname: auth.currentUser?.displayName || 'Anonim',
+                        message: message,
+                        timestamp: serverTimestamp()
+                    });
+                    chatInputToUse.value = '';
+                }
+            });
+            
+            chatInputToUse.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendButtonToUse.click();
+                }
+            });
         }
     </script>
 </body>
