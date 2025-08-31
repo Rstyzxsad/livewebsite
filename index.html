@@ -398,7 +398,8 @@
                 setLiveState(false);
                 showMessage("Siaran telah dihentikan.");
             } catch (e) {
-error_message_placeholder
+                console.error("Gagal menghentikan siaran:", e);
+                showMessage("Gagal menghentikan siaran.");
             }
         });
 
