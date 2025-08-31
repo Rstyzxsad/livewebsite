@@ -429,7 +429,7 @@
                     setLiveState(true);
                     
                     // Inisialisasi listener chat untuk host
-                    startChatListener(userId, chatBox, true);
+                    startChatListener(userId, chatBox, chatInput, sendChatButton, true);
                 };
                 
                 ws.onmessage = async (event) => {
@@ -592,11 +592,11 @@
             };
             
             // Inisialisasi listener chat untuk penonton
-            startChatListener(streamerId, chatBoxViewer, false);
+            startChatListener(streamerId, chatBoxViewer, chatInputViewer, sendChatButtonViewer, false);
         }
 
         // --- Fungsi Chat Firestore ---
-        function startChatListener(streamId, chatElement, isHost) {
+        function startChatListener(streamId, chatElement, chatInputToUse, sendButtonToUse, isHost) {
             const chatCollection = collection(db, `artifacts/${appId}/public/data/chat/${streamId}/messages`);
             onSnapshot(query(chatCollection), (snapshot) => {
                 const messages = [];
@@ -621,11 +621,8 @@
                     chatElement.prepend(messageBubble); // Add to the top
                 });
             });
-
-            const chatInputToUse = isHost ? chatInput : chatInputViewer;
-            const sendButtonToUse = isHost ? sendChatButton : sendChatButtonViewer;
             
-            sendButtonToUse.addEventListener('click', async () => {
+            sendButtonToUse.onclick = async () => {
                 const message = chatInputToUse.value.trim();
                 if (message) {
                     await addDoc(collection(db, `artifacts/${appId}/public/data/chat/${streamId}/messages`), {
@@ -636,7 +633,7 @@
                     });
                     chatInputToUse.value = '';
                 }
-            });
+            };
             
             chatInputToUse.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
