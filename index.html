@@ -304,7 +304,6 @@
                 hostSection.classList.remove('hidden');
                 discoverSection.classList.add('hidden');
                 viewerSection.classList.add('hidden');
-                showMessage(`Anda sedang siaran langsung sebagai "${streamTitleInput.value}".`);
             } else {
                 // Kembali ke tampilan penemuan
                 hostSection.classList.add('hidden');
@@ -372,14 +371,21 @@
         }
 
         async function getCameraStream(deviceId = null) {
-            const constraints = {
-                video: {
-                    deviceId: deviceId ? { exact: deviceId } : undefined
-                },
-                audio: true
-            };
             try {
-                 return await navigator.mediaDevices.getUserMedia(constraints);
+                 const constraints = {
+                     video: {
+                         deviceId: deviceId ? { exact: deviceId } : undefined
+                     },
+                     audio: true
+                 };
+                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                 if (stream && stream.getTracks().length > 0) {
+                     return stream;
+                 } else {
+                     console.error("Stream kosong atau tidak valid.");
+                     showMessage('Gagal mendapatkan stream video. Periksa izin kamera di browser Anda.');
+                     return null;
+                 }
             } catch (error) {
                 console.error("Kesalahan saat mengakses kamera/mikrofon:", error);
                 if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
@@ -400,8 +406,9 @@
                 return;
             }
 
-            // Sembunyikan modal login
+            // Sembunyikan modal login dan tampilkan pesan loading
             loginModal.classList.add('hidden');
+            showMessage("Sedang memuat live stream...");
             
             // Dapatkan akses ke kamera dan mikrofon
             const stream = await getCameraStream();
@@ -441,6 +448,7 @@
                     timestamp: serverTimestamp()
                 });
                 setLiveState(true);
+                showMessage(`Anda sedang siaran langsung sebagai "${streamTitle}".`);
                 
                 // Inisialisasi listener chat untuk host
                 startChatListener(userId, chatBox, chatInput, sendChatButton, true);
@@ -470,6 +478,7 @@
 
         cancelButton.addEventListener('click', () => {
             loginModal.classList.add('hidden');
+            hideMessage(); // Sembunyikan pesan jika modal dibatalkan
         });
 
         startLiveButton.addEventListener('click', startLiveSession);
